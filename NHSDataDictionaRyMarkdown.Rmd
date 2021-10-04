@@ -1,0 +1,102 @@
+---
+title: "NHSDataDictionaRy Workshop"
+subtitle: "NHS-R Community"
+author: "Gary Hutson - Senior Data Scientist"
+date: "04/10/2021"
+output:
+  
+  xaringan::moon_reader:
+    # includes: 
+      #after_body: 
+        #- insert-logo.html
+    css:
+      - default
+      - css/mango.css
+      - css/mango-fonts.css
+    lib_dir: libs
+    nature:
+      highlightStyle: google
+      highlightLines: true
+      seal: false
+      self_contained: true
+      highlightLanguage: ["r"]
+      countIncrementalSlides: false
+      ratio: "16:9"
+---
+
+``` {r setup, include=FALSE}
+library(knitr)
+library(tidyverse)
+library(NHSDataDictionaRy)
+#devtools::install_github("gadenbuie/xaringanExtra")
+library(xaringanExtra)
+
+```
+
+
+
+background-image: url(man/figures/nhs-slide.png)
+background-size: cover
+font-color: red
+class: center, bottom, inverse
+## Welcome to the NHSDataDictionaRy package
+
+---
+## Introduction
+Welcome to the NHSDataDictionaRy workshop. Today we will learn how to work with the data dictionary for NHS lookup tasks, as well as how to extend the package to work with any website. The concentration of the workshop will be broken down as such:
+
+- Getting familiar with the NHSDataDictionaRy package and all the underlying functions
+- Understanding the [nhs_data_elements()]() elements function and how to filter on this
+- Gather text from any website and perform some text cleaning operations on the text, using a combination of functions contained in the package
+- Using the [TableR](https://rdrr.io/cran/NHSDataDictionaRy/man/tableR.html) function to retrieve HTML tables from the data dictionary site and then extending this to other websites
+- Working with XPath website elements with the NHSDataDictionaRy package
+- How to use the package and retrieve website elements
+- In general, a whistle stop tour of web scraping and how to do this with ease with the package
+
+---
+class: inverse, middle, left
+# Loading libraries
+
+---
+# Loading libraries in NHSDataDictionaRy package
+
+To load the libraries needed for this session you will need to bring in the following:
+
+```{r comment='#'}
+library(NHSDataDictionaRy)
+```
+
+This will bring in the libraries needed to work with the package. The next step would be to check the dependencies in the package: 
+
+```{r avail_packs}
+packrat:::recursivePackageDependencies("NHSDataDictionaRy", lib.loc = .libPaths())
+```
+
+---
+class: inverse, middle, left
+# Let's get scraping those data elements
+
+---
+## Starting with the nhs_data_elements() function
+
+To retrieve the list of currrent NHS lookups in the table finder we use the underlying function:
+
+```{r table_finder}
+
+NHSDataDictionaRy::nhs_data_elements()
+```
+---
+This function will then return the full list of data elements the package has scraped from the [NHS Data Dictionary website](https://www.datadictionary.nhs.uk/). 
+
+An example of what has been scraped is on the next slide.
+
+## Working with the scraped values
+
+These scraped values will allow us to access the XPath elements of the website directly (don't worry if you don't know what an XPath is, we will get to that later on).
+
+
+
+
+
+
+
