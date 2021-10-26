@@ -69,15 +69,16 @@ packrat:::recursivePackageDependencies("NHSDataDictionaRy", lib.loc = .libPaths(
 ```
 
 ```
-##  [1] "R6"         "askpass"    "cli"        "crayon"     "curl"       "dplyr"      "ellipsis"   "fansi"      "generics"  
-## [10] "glue"       "httr"       "jsonlite"   "lifecycle"  "magrittr"   "mime"       "openssl"    "pillar"     "pkgconfig" 
-## [19] "purrr"      "rlang"      "rvest"      "selectr"    "stringi"    "stringr"    "sys"        "tibble"     "tidyselect"
-## [28] "utf8"       "vctrs"      "xml2"
+##  [1] "R6"         "askpass"    "cli"        "crayon"     "curl"       "dplyr"      "ellipsis"  
+##  [8] "fansi"      "generics"   "glue"       "httr"       "jsonlite"   "lifecycle"  "magrittr"  
+## [15] "mime"       "openssl"    "pillar"     "pkgconfig"  "purrr"      "rlang"      "rvest"     
+## [22] "selectr"    "stringi"    "stringr"    "sys"        "tibble"     "tidyselect" "utf8"      
+## [29] "vctrs"      "xml2"
 ```
 
 ---
 class: inverse, middle, left, hide-logo
-# Let's get scraping those data elements
+# Working with the TableR, nhs_data_elements and nhs_tableR functions
 
 ---
 # Starting with the nhs_data_elements() function
@@ -126,11 +127,11 @@ print(head(act_treat_lookup,5))
 ## # A tibble: 5 x 4
 ##   Code  Description                Dict_Type                                     DttmExtracted      
 ##   &lt;chr&gt; &lt;chr&gt;                      &lt;chr&gt;                                         &lt;dttm&gt;             
-## 1 100   General Surgery Service    NHS Hospital Activity Treatment Function Code 2021-10-26 12:21:24
-## 2 101   Urology Service            NHS Hospital Activity Treatment Function Code 2021-10-26 12:21:24
-## 3 102   Transplant Surgery Service NHS Hospital Activity Treatment Function Code 2021-10-26 12:21:24
-## 4 103   Breast Surgery Service     NHS Hospital Activity Treatment Function Code 2021-10-26 12:21:24
-## 5 104   Colorectal Surgery Service NHS Hospital Activity Treatment Function Code 2021-10-26 12:21:24
+## 1 100   General Surgery Service    NHS Hospital Activity Treatment Function Code 2021-10-26 14:14:02
+## 2 101   Urology Service            NHS Hospital Activity Treatment Function Code 2021-10-26 14:14:02
+## 3 102   Transplant Surgery Service NHS Hospital Activity Treatment Function Code 2021-10-26 14:14:02
+## 4 103   Breast Surgery Service     NHS Hospital Activity Treatment Function Code 2021-10-26 14:14:02
+## 5 104   Colorectal Surgery Service NHS Hospital Activity Treatment Function Code 2021-10-26 14:14:02
 ```
 This lookup will return the lookup table needed.
 ---
@@ -194,10 +195,10 @@ glimpse(tfc)
 ```
 ## Rows: 184
 ## Columns: 4
-## $ Code          &lt;chr&gt; "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "113", "115", "1~
-## $ Description   &lt;chr&gt; "General Surgery Service", "Urology Service", "Transplant Surgery Service", "Breast Surgery Service"~
-## $ Dict_Type     &lt;chr&gt; "Treatment Function Code", "Treatment Function Code", "Treatment Function Code", "Treatment Function~
-## $ DttmExtracted &lt;dttm&gt; 2021-10-26 12:21:25, 2021-10-26 12:21:25, 2021-10-26 12:21:25, 2021-10-26 12:21:25, 2021-10-26 12:2~
+## $ Code          &lt;chr&gt; "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111~
+## $ Description   &lt;chr&gt; "General Surgery Service", "Urology Service", "Transplant Surgery Service", "Brea~
+## $ Dict_Type     &lt;chr&gt; "Treatment Function Code", "Treatment Function Code", "Treatment Function Code", ~
+## $ DttmExtracted &lt;dttm&gt; 2021-10-26 14:14:04, 2021-10-26 14:14:04, 2021-10-26 14:14:04, 2021-10-26 14:14:~
 ```
 
 This function replaces the convoluted code we used earlier. 
@@ -208,16 +209,170 @@ We have this lookup and now we will generate some hospital data to match with ou
 
 ```r
 spec_code &lt;- rep(as.character(c(101,102,103,104,105,106,107, 108)), 12)
-length(spec_code)
+attends &lt;- round(rnorm(length(spec_code), 500, 50))
+breaches &lt;- round(rnorm(length(spec_code), 40, 3))
+admits &lt;- round(rnorm(length(spec_code), 300, 20))
+month &lt;- rep(c("Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept",
+               "Oct", "Nov", "Dec"),8)
+# Combine these atomic vectors into tibble
+ed_act_by_month &lt;- tibble(spec_code, attends, breaches, admits, month)
+glimpse(ed_act_by_month)
 ```
 
 ```
-## [1] 96
+## Rows: 96
+## Columns: 5
+## $ spec_code &lt;chr&gt; "101", "102", "103", "104", "105", "106", "107", "108", "101", "102", "103", "104", "~
+## $ attends   &lt;dbl&gt; 487, 466, 539, 579, 464, 523, 452, 442, 487, 488, 522, 586, 405, 533, 487, 561, 379, ~
+## $ breaches  &lt;dbl&gt; 39, 42, 38, 41, 40, 39, 38, 40, 39, 41, 42, 35, 40, 43, 36, 38, 37, 39, 44, 34, 43, 3~
+## $ admits    &lt;dbl&gt; 293, 275, 260, 271, 314, 294, 297, 297, 333, 286, 298, 323, 304, 285, 307, 265, 307, ~
+## $ month     &lt;chr&gt; "Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", "D~
 ```
+
+
+---
+## Using our custom data to join our lookups
+
+Now we have some data to match, we can join our dynamic lookup from the web on to the lookup:
+
 
 ```r
-attends &lt;- round(rnorm(length(spec_code), 500, 50))
+# Get our tfc and we are going to join this to specialty code
+joined_activity = ed_act_by_month %&gt;% 
+  dplyr::left_join(tfc, by = c("spec_code"="Code")) %&gt;% 
+  dplyr::select(everything(), -c(Dict_Type, DttmExtracted))
+
+glimpse(joined_activity)
 ```
+
+```
+## Rows: 96
+## Columns: 6
+## $ spec_code   &lt;chr&gt; "101", "102", "103", "104", "105", "106", "107", "108", "101", "102", "103", "104",~
+## $ attends     &lt;dbl&gt; 487, 466, 539, 579, 464, 523, 452, 442, 487, 488, 522, 586, 405, 533, 487, 561, 379~
+## $ breaches    &lt;dbl&gt; 39, 42, 38, 41, 40, 39, 38, 40, 39, 41, 42, 35, 40, 43, 36, 38, 37, 39, 44, 34, 43,~
+## $ admits      &lt;dbl&gt; 293, 275, 260, 271, 314, 294, 297, 297, 333, 286, 298, 323, 304, 285, 307, 265, 307~
+## $ month       &lt;chr&gt; "Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", ~
+## $ Description &lt;chr&gt; "Urology Service", "Transplant Surgery Service", "Breast Surgery Service", "Colorec~
+```
+
+
+---
+background-image: url(man/figures/practice.jpg)
+# Practice time - 10 minutes
+Try joining the main specialty code to this data
+
+---
+## Practice solution
+This is pretty simple really - I just need to use the nhs_table_findeR function to get my lookup, if you are not sure what the string is to pass, use the nhs_data_elements() function to get all the strings. 
+
+
+```r
+main_spec &lt;- NHSDataDictionaRy::nhs_table_findeR("CARE PROFESSIONAL MAIN SPECIALTY CODE",
+                                    title="Main Specialty")
+
+# Join our main specialty on to the ed_act_by_month tibble
+main_spec_with_act &lt;- ed_act_by_month %&gt;% 
+  dplyr::left_join(main_spec, by= c("spec_code"="Code")) %&gt;% 
+  dplyr::select(everything(), -c(Dict_Type, DttmExtracted))
+
+glimpse(main_spec_with_act)
+```
+
+```
+## Rows: 96
+## Columns: 6
+## $ spec_code   &lt;chr&gt; "101", "102", "103", "104", "105", "106", "107", "108", "101", "102", "103", "104",~
+## $ attends     &lt;dbl&gt; 487, 466, 539, 579, 464, 523, 452, 442, 487, 488, 522, 586, 405, 533, 487, 561, 379~
+## $ breaches    &lt;dbl&gt; 39, 42, 38, 41, 40, 39, 38, 40, 39, 41, 42, 35, 40, 43, 36, 38, 37, 39, 44, 34, 43,~
+## $ admits      &lt;dbl&gt; 293, 275, 260, 271, 314, 294, 297, 297, 333, 286, 298, 323, 304, 285, 307, 265, 307~
+## $ month       &lt;chr&gt; "Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", ~
+## $ Description &lt;chr&gt; "Urology", NA, NA, NA, NA, NA, "Vascular Surgery", NA, "Urology", NA, NA, NA, NA, N~
+```
+
+
+---
+class: inverse, middle, left, hide-logo
+# Wider use cases of the web scraping potential
+
+---
+## Scraping the Championship Football table
+We could use the tableR function to scrape the results of the Championship table, here we will have to do some text processing as well to clean this up. I want to see how good or bad my team Nottingham Forest are doing.To get the Xpath I will need to use the Inspect button in google to copy this:
+
+&lt;img src="man/figures/football_gif.gif" alt="drawing" height="350px" width="700px"/&gt;
+
+---
+## Using the retrieved Xpath from Google
+
+The next step would be to copy the xpath and url into a variable, so we can differentiate them later.
+
+
+```r
+football_xpath &lt;- '//*[@id="u07907911180832272"]/div/div[2]/div/div/div[2]/div/div/table'
+url &lt;- "https://www.bbc.co.uk/sport/football/championship/table"
+```
+
+Now let's get the HTML table from the website. Important to note that if it does not end in **/table** at the end of the url then it cannot be used with the TableR function, as it is not an HTML table object. 
+
+
+```r
+football_table &lt;- NHSDataDictionaRy::tableR(url=url, 
+                          xpath=football_xpath,
+                          title="English Championship League Standings")
+
+head(football_table, 3)
+```
+
+```
+## # A tibble: 3 x 14
+##   V1    V2     Team  P     W     D     L     F     A     GD    Pts   Form   Dict_Type DttmExtracted      
+##   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;dttm&gt;             
+## 1 1     team ~ Bour~ 14    10    4     0     24    8     16    34    DDrew~ English ~ 2021-10-26 14:14:05
+## 2 2     team ~ Fulh~ 14    9     2     3     33    14    19    29    WWon ~ English ~ 2021-10-26 14:14:05
+## 3 3     team ~ West~ 14    8     4     2     25    11    14    28    WWon ~ English ~ 2021-10-26 14:14:05
+```
+
+---
+## Let's clean the table up
+The first stage would be to drop some of the less informative columns:
+
+
+```r
+# Convert to integer
+ftball_reduced &lt;- football_table %&gt;% 
+  dplyr::select(-c(V1, V2, Form, Dict_Type,
+                   DttmExtracted)) %&gt;% #Purge the none informative columns
+  dplyr::slice(1:nrow(football_table)-1) %&gt;% # Get rid of the last row
+  dplyr::add_tally()#Filter out team 
+
+#Remove team
+minus_team &lt;- ftball_reduced %&gt;% 
+  dplyr::select(!contains("Team"))
+
+# Convert all fields to integer
+minus_team &lt;- data.frame(sapply(minus_team, as.integer))
+# Bind back together
+
+football_table &lt;- cbind(ftball_reduced, minus_team)
+```
+
+
+
+---
+## Let's clean the table up (cont.)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>

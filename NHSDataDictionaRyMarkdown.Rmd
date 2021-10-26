@@ -77,7 +77,7 @@ packrat:::recursivePackageDependencies("NHSDataDictionaRy", lib.loc = .libPaths(
 
 ---
 class: inverse, middle, left, hide-logo
-# Let's get scraping those data elements
+# Working with the TableR, nhs_data_elements and nhs_tableR functions
 
 ---
 # Starting with the nhs_data_elements() function
@@ -184,8 +184,130 @@ We have this lookup and now we will generate some hospital data to match with ou
 ```{r generated_data}
 
 spec_code <- rep(as.character(c(101,102,103,104,105,106,107, 108)), 12)
-length(spec_code)
 attends <- round(rnorm(length(spec_code), 500, 50))
+breaches <- round(rnorm(length(spec_code), 40, 3))
+admits <- round(rnorm(length(spec_code), 300, 20))
+month <- rep(c("Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept",
+               "Oct", "Nov", "Dec"),8)
+# Combine these atomic vectors into tibble
+ed_act_by_month <- tibble(spec_code, attends, breaches, admits, month)
+glimpse(ed_act_by_month)
                           
 ```
+
+
+---
+## Using our custom data to join our lookups
+
+Now we have some data to match, we can join our dynamic lookup from the web on to the lookup:
+
+```{r join_on activity_data}
+# Get our tfc and we are going to join this to specialty code
+joined_activity = ed_act_by_month %>% 
+  dplyr::left_join(tfc, by = c("spec_code"="Code")) %>% 
+  dplyr::select(everything(), -c(Dict_Type, DttmExtracted))
+
+glimpse(joined_activity)
+
+
+```
+
+
+---
+background-image: url(man/figures/practice.jpg)
+# Practice time - 10 minutes
+Try joining the main specialty code to this data
+
+---
+## Practice solution
+This is pretty simple really - I just need to use the nhs_table_findeR function to get my lookup, if you are not sure what the string is to pass, use the nhs_data_elements() function to get all the strings. 
+
+```{r practice_solution_two}
+main_spec <- NHSDataDictionaRy::nhs_table_findeR("CARE PROFESSIONAL MAIN SPECIALTY CODE",
+                                    title="Main Specialty")
+
+# Join our main specialty on to the ed_act_by_month tibble
+main_spec_with_act <- ed_act_by_month %>% 
+  dplyr::left_join(main_spec, by= c("spec_code"="Code")) %>% 
+  dplyr::select(everything(), -c(Dict_Type, DttmExtracted))
+
+glimpse(main_spec_with_act)
+
+```
+
+
+---
+class: inverse, middle, left, hide-logo
+# Wider use cases of the web scraping potential
+
+---
+## Scraping the Championship Football table
+We could use the tableR function to scrape the results of the Championship table, here we will have to do some text processing as well to clean this up. I want to see how good or bad my team Nottingham Forest are doing.To get the Xpath I will need to use the Inspect button in google to copy this:
+
+<img src="man/figures/football_gif.gif" alt="drawing" height="350px" width="700px"/>
+
+---
+## Using the retrieved Xpath from Google
+
+The next step would be to copy the xpath and url into a variable, so we can differentiate them later.
+
+```{r google_xpath_football}
+football_xpath <- '//*[@id="u07907911180832272"]/div/div[2]/div/div/div[2]/div/div/table'
+url <- "https://www.bbc.co.uk/sport/football/championship/table"
+```
+
+Now let's get the HTML table from the website. Important to note that if it does not end in **/table** at the end of the url then it cannot be used with the TableR function, as it is not an HTML table object. 
+
+```{r google_football_table}
+football_table <- NHSDataDictionaRy::tableR(url=url, 
+                          xpath=football_xpath,
+                          title="English Championship League Standings")
+
+head(football_table, 3)
+
+```
+
+---
+## Let's clean the table up
+The first stage would be to drop some of the less informative columns:
+
+```{r drop_cols_footy}
+# Convert to integer
+ftball_reduced <- football_table %>% 
+  dplyr::select(-c(V1, V2, Form, Dict_Type,
+                   DttmExtracted)) %>% #Purge the none informative columns
+  dplyr::slice(1:nrow(football_table)-1) %>% # Get rid of the last row
+  dplyr::add_tally()#Filter out team 
+
+#Remove team
+minus_team <- ftball_reduced %>% 
+  dplyr::select(!contains("Team"))
+
+# Convert all fields to integer
+minus_team <- data.frame(sapply(minus_team, as.integer))
+# Bind back together
+
+football_table <- cbind(ftball_reduced, minus_team)
+
+```
+
+
+
+---
+## Let's clean the table up (cont.)
+
+```{r glimpsing_the_table}
+
+```
+
+
+
+
+
+
+
+
+
+
+
 
