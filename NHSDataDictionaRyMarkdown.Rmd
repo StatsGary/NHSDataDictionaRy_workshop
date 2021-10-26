@@ -30,6 +30,8 @@ library(tidyverse)
 library(NHSDataDictionaRy)
 #devtools::install_github("gadenbuie/xaringanExtra")
 library(xaringanExtra)
+library(ggplot2)
+library(plotly)
 
 ```
 
@@ -294,21 +296,30 @@ football_table <- cbind(Team=ftball_reduced$Team, minus_team)
 
 
 ---
-## Let's clean the table up (cont.)
+## Viewing the data on a scatter chart to explore key metrics
+```{r glimpsing_the_table, out.width='100%', out.height='55%'}
 
-```{r glimpsing_the_table, out.width='40%', out.height='50%'}
-library(ggplot2)
-library(plotly)
-ggplot(football_table, 
-       aes(x=GD, y=Pts, color=factor(Team))) + geom_point() +
+plot <- ggplot(football_table, 
+       aes(x=W, y=Pts, color=factor(Team))) + geom_point() +
   theme_minimal()
+
+ggplotly(plot)
+
 
 ```
 
+---
+background-image: url(man/figures/practice.jpg)
+# Practice time - 30 minutes
+Have a go at retrieving some Xpath data from any website. Find a data table and bring it into R with the TableR function.
 
+---
+class: inverse, middle, left, hide-logo
+# Wider use cases of the web scraping potential
 
+---
 
-
+## Extracting text from the NHS Data Dictionary website
 
 
 
