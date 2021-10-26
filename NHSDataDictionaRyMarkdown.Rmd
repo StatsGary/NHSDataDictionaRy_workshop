@@ -22,7 +22,7 @@ output:
       highlightLanguage: ["r"]
       countIncrementalSlides: false
       ratio: "16:9"
-
+  
 ---
 
 ``` {r setup, include=FALSE}
@@ -287,7 +287,7 @@ minus_team <- ftball_reduced %>%
 minus_team <- data.frame(sapply(minus_team, as.integer))
 # Bind back together
 
-football_table <- cbind(ftball_reduced, minus_team)
+football_table <- cbind(Team=ftball_reduced$Team, minus_team)
 
 ```
 
@@ -296,11 +296,14 @@ football_table <- cbind(ftball_reduced, minus_team)
 ---
 ## Let's clean the table up (cont.)
 
-```{r glimpsing_the_table}
+```{r glimpsing_the_table, out.width='40%', out.height='50%'}
+library(ggplot2)
+library(plotly)
+ggplot(football_table, 
+       aes(x=GD, y=Pts, color=factor(Team))) + geom_point() +
+  theme_minimal()
 
 ```
-
-
 
 
 

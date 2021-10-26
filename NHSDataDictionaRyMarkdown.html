@@ -69,11 +69,11 @@ packrat:::recursivePackageDependencies("NHSDataDictionaRy", lib.loc = .libPaths(
 ```
 
 ```
-##  [1] "R6"         "askpass"    "cli"        "crayon"     "curl"       "dplyr"      "ellipsis"  
-##  [8] "fansi"      "generics"   "glue"       "httr"       "jsonlite"   "lifecycle"  "magrittr"  
-## [15] "mime"       "openssl"    "pillar"     "pkgconfig"  "purrr"      "rlang"      "rvest"     
-## [22] "selectr"    "stringi"    "stringr"    "sys"        "tibble"     "tidyselect" "utf8"      
-## [29] "vctrs"      "xml2"
+##  [1] "R6"         "askpass"    "cli"        "crayon"     "curl"       "dplyr"     
+##  [7] "ellipsis"   "fansi"      "generics"   "glue"       "httr"       "jsonlite"  
+## [13] "lifecycle"  "magrittr"   "mime"       "openssl"    "pillar"     "pkgconfig" 
+## [19] "purrr"      "rlang"      "rvest"      "selectr"    "stringi"    "stringr"   
+## [25] "sys"        "tibble"     "tidyselect" "utf8"       "vctrs"      "xml2"
 ```
 
 ---
@@ -125,13 +125,13 @@ print(head(act_treat_lookup,5))
 
 ```
 ## # A tibble: 5 x 4
-##   Code  Description                Dict_Type                                     DttmExtracted      
-##   &lt;chr&gt; &lt;chr&gt;                      &lt;chr&gt;                                         &lt;dttm&gt;             
-## 1 100   General Surgery Service    NHS Hospital Activity Treatment Function Code 2021-10-26 14:14:02
-## 2 101   Urology Service            NHS Hospital Activity Treatment Function Code 2021-10-26 14:14:02
-## 3 102   Transplant Surgery Service NHS Hospital Activity Treatment Function Code 2021-10-26 14:14:02
-## 4 103   Breast Surgery Service     NHS Hospital Activity Treatment Function Code 2021-10-26 14:14:02
-## 5 104   Colorectal Surgery Service NHS Hospital Activity Treatment Function Code 2021-10-26 14:14:02
+##   Code  Description                Dict_Type                            DttmExtracted      
+##   &lt;chr&gt; &lt;chr&gt;                      &lt;chr&gt;                                &lt;dttm&gt;             
+## 1 100   General Surgery Service    NHS Hospital Activity Treatment Fun~ 2021-10-26 14:45:13
+## 2 101   Urology Service            NHS Hospital Activity Treatment Fun~ 2021-10-26 14:45:13
+## 3 102   Transplant Surgery Service NHS Hospital Activity Treatment Fun~ 2021-10-26 14:45:13
+## 4 103   Breast Surgery Service     NHS Hospital Activity Treatment Fun~ 2021-10-26 14:45:13
+## 5 104   Colorectal Surgery Service NHS Hospital Activity Treatment Fun~ 2021-10-26 14:45:13
 ```
 This lookup will return the lookup table needed.
 ---
@@ -195,10 +195,10 @@ glimpse(tfc)
 ```
 ## Rows: 184
 ## Columns: 4
-## $ Code          &lt;chr&gt; "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111~
-## $ Description   &lt;chr&gt; "General Surgery Service", "Urology Service", "Transplant Surgery Service", "Brea~
-## $ Dict_Type     &lt;chr&gt; "Treatment Function Code", "Treatment Function Code", "Treatment Function Code", ~
-## $ DttmExtracted &lt;dttm&gt; 2021-10-26 14:14:04, 2021-10-26 14:14:04, 2021-10-26 14:14:04, 2021-10-26 14:14:~
+## $ Code          &lt;chr&gt; "100", "101", "102", "103", "104", "105", "106", "107", "108", "109~
+## $ Description   &lt;chr&gt; "General Surgery Service", "Urology Service", "Transplant Surgery S~
+## $ Dict_Type     &lt;chr&gt; "Treatment Function Code", "Treatment Function Code", "Treatment Fu~
+## $ DttmExtracted &lt;dttm&gt; 2021-10-26 14:45:13, 2021-10-26 14:45:13, 2021-10-26 14:45:13, 202~
 ```
 
 This function replaces the convoluted code we used earlier. 
@@ -222,11 +222,11 @@ glimpse(ed_act_by_month)
 ```
 ## Rows: 96
 ## Columns: 5
-## $ spec_code &lt;chr&gt; "101", "102", "103", "104", "105", "106", "107", "108", "101", "102", "103", "104", "~
-## $ attends   &lt;dbl&gt; 487, 466, 539, 579, 464, 523, 452, 442, 487, 488, 522, 586, 405, 533, 487, 561, 379, ~
-## $ breaches  &lt;dbl&gt; 39, 42, 38, 41, 40, 39, 38, 40, 39, 41, 42, 35, 40, 43, 36, 38, 37, 39, 44, 34, 43, 3~
-## $ admits    &lt;dbl&gt; 293, 275, 260, 271, 314, 294, 297, 297, 333, 286, 298, 323, 304, 285, 307, 265, 307, ~
-## $ month     &lt;chr&gt; "Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", "D~
+## $ spec_code &lt;chr&gt; "101", "102", "103", "104", "105", "106", "107", "108", "101", "102", "~
+## $ attends   &lt;dbl&gt; 541, 444, 530, 510, 561, 474, 475, 532, 458, 541, 489, 505, 459, 526, 5~
+## $ breaches  &lt;dbl&gt; 44, 44, 36, 45, 42, 35, 37, 34, 39, 41, 38, 45, 40, 35, 41, 42, 40, 39,~
+## $ admits    &lt;dbl&gt; 327, 321, 283, 306, 317, 293, 286, 317, 312, 299, 312, 278, 293, 330, 2~
+## $ month     &lt;chr&gt; "Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept", "O~
 ```
 
 
@@ -248,12 +248,12 @@ glimpse(joined_activity)
 ```
 ## Rows: 96
 ## Columns: 6
-## $ spec_code   &lt;chr&gt; "101", "102", "103", "104", "105", "106", "107", "108", "101", "102", "103", "104",~
-## $ attends     &lt;dbl&gt; 487, 466, 539, 579, 464, 523, 452, 442, 487, 488, 522, 586, 405, 533, 487, 561, 379~
-## $ breaches    &lt;dbl&gt; 39, 42, 38, 41, 40, 39, 38, 40, 39, 41, 42, 35, 40, 43, 36, 38, 37, 39, 44, 34, 43,~
-## $ admits      &lt;dbl&gt; 293, 275, 260, 271, 314, 294, 297, 297, 333, 286, 298, 323, 304, 285, 307, 265, 307~
-## $ month       &lt;chr&gt; "Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", ~
-## $ Description &lt;chr&gt; "Urology Service", "Transplant Surgery Service", "Breast Surgery Service", "Colorec~
+## $ spec_code   &lt;chr&gt; "101", "102", "103", "104", "105", "106", "107", "108", "101", "102",~
+## $ attends     &lt;dbl&gt; 541, 444, 530, 510, 561, 474, 475, 532, 458, 541, 489, 505, 459, 526,~
+## $ breaches    &lt;dbl&gt; 44, 44, 36, 45, 42, 35, 37, 34, 39, 41, 38, 45, 40, 35, 41, 42, 40, 3~
+## $ admits      &lt;dbl&gt; 327, 321, 283, 306, 317, 293, 286, 317, 312, 299, 312, 278, 293, 330,~
+## $ month       &lt;chr&gt; "Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept", ~
+## $ Description &lt;chr&gt; "Urology Service", "Transplant Surgery Service", "Breast Surgery Serv~
 ```
 
 
@@ -282,12 +282,12 @@ glimpse(main_spec_with_act)
 ```
 ## Rows: 96
 ## Columns: 6
-## $ spec_code   &lt;chr&gt; "101", "102", "103", "104", "105", "106", "107", "108", "101", "102", "103", "104",~
-## $ attends     &lt;dbl&gt; 487, 466, 539, 579, 464, 523, 452, 442, 487, 488, 522, 586, 405, 533, 487, 561, 379~
-## $ breaches    &lt;dbl&gt; 39, 42, 38, 41, 40, 39, 38, 40, 39, 41, 42, 35, 40, 43, 36, 38, 37, 39, 44, 34, 43,~
-## $ admits      &lt;dbl&gt; 293, 275, 260, 271, 314, 294, 297, 297, 333, 286, 298, 323, 304, 285, 307, 265, 307~
-## $ month       &lt;chr&gt; "Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept", "Oct", "Nov", ~
-## $ Description &lt;chr&gt; "Urology", NA, NA, NA, NA, NA, "Vascular Surgery", NA, "Urology", NA, NA, NA, NA, N~
+## $ spec_code   &lt;chr&gt; "101", "102", "103", "104", "105", "106", "107", "108", "101", "102",~
+## $ attends     &lt;dbl&gt; 541, 444, 530, 510, 561, 474, 475, 532, 458, 541, 489, 505, 459, 526,~
+## $ breaches    &lt;dbl&gt; 44, 44, 36, 45, 42, 35, 37, 34, 39, 41, 38, 45, 40, 35, 41, 42, 40, 3~
+## $ admits      &lt;dbl&gt; 327, 321, 283, 306, 317, 293, 286, 317, 312, 299, 312, 278, 293, 330,~
+## $ month       &lt;chr&gt; "Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept", ~
+## $ Description &lt;chr&gt; "Urology", NA, NA, NA, NA, NA, "Vascular Surgery", NA, "Urology", NA,~
 ```
 
 
@@ -325,11 +325,12 @@ head(football_table, 3)
 
 ```
 ## # A tibble: 3 x 14
-##   V1    V2     Team  P     W     D     L     F     A     GD    Pts   Form   Dict_Type DttmExtracted      
-##   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;dttm&gt;             
-## 1 1     team ~ Bour~ 14    10    4     0     24    8     16    34    DDrew~ English ~ 2021-10-26 14:14:05
-## 2 2     team ~ Fulh~ 14    9     2     3     33    14    19    29    WWon ~ English ~ 2021-10-26 14:14:05
-## 3 3     team ~ West~ 14    8     4     2     25    11    14    28    WWon ~ English ~ 2021-10-26 14:14:05
+##   V1    V2     Team   P     W     D     L     F     A     GD    Pts   Form       Dict_Type 
+##   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;      &lt;chr&gt;     
+## 1 1     team ~ Bourn~ 14    10    4     0     24    8     16    34    DDrew 0 -~ English C~
+## 2 2     team ~ Fulham 14    9     2     3     33    14    19    29    WWon 3 - ~ English C~
+## 3 3     team ~ West ~ 14    8     4     2     25    11    14    28    WWon 4 - ~ English C~
+## # ... with 1 more variable: DttmExtracted &lt;dttm&gt;
 ```
 
 ---
@@ -353,7 +354,7 @@ minus_team &lt;- ftball_reduced %&gt;%
 minus_team &lt;- data.frame(sapply(minus_team, as.integer))
 # Bind back together
 
-football_table &lt;- cbind(ftball_reduced, minus_team)
+football_table &lt;- cbind(Team=ftball_reduced$Team, minus_team)
 ```
 
 
@@ -362,8 +363,41 @@ football_table &lt;- cbind(ftball_reduced, minus_team)
 ## Let's clean the table up (cont.)
 
 
+```r
+library(ggplot2)
+library(plotly)
+```
 
+```
+## 
+## Attaching package: 'plotly'
+```
 
+```
+## The following object is masked from 'package:ggplot2':
+## 
+##     last_plot
+```
+
+```
+## The following object is masked from 'package:stats':
+## 
+##     filter
+```
+
+```
+## The following object is masked from 'package:graphics':
+## 
+##     layout
+```
+
+```r
+ggplot(football_table, 
+       aes(x=GD, y=Pts, color=factor(Team))) + geom_point() +
+  theme_minimal()
+```
+
+&lt;img src="NHSDataDictionaRyMarkdown_files/figure-html/glimpsing_the_table-1.png" width="40%" height="50%" /&gt;
 
 
 
