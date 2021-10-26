@@ -161,7 +161,8 @@ This is supposed to be informative and will allow you then to quickly inspect ot
 
 ---
 background-image: url(man/figures/practice.jpg)
-
+# Practice time - 10 minutes
+Have a go at extracting elements from the nhs_data_elements() and TableR functions.
 
 ---
 ## Introducing a quicker way to retrieve elements
@@ -315,13 +316,67 @@ Have a go at retrieving some Xpath data from any website. Find a data table and 
 
 ---
 class: inverse, middle, left, hide-logo
-# Wider use cases of the web scraping potential
+# Scraping raw text from websites with xpathTextR function
 
 ---
 
 ## Extracting text from the NHS Data Dictionary website
 
+```{r texter_extraction}
+
+acc_type <- nhs_data_table %>% 
+  filter(link_name=='ACCOMMODATION TYPE')
+#browseURL(acc_type$full_url)
+
+# Specify the custom element obtained from the inspect function
+xpath <- '//*[@id="element_accommodation_type"]/div/p'
+result_list <- NHSDataDictionaRy::xpathTextR(url=acc_type$full_url, 
+                              xpath = xpath)
+
+str(result_list)
+                              
+
+```
+
+---
+## Cleaning the extracted text
+The next stage is to clean the extracted text from the list element **result**:
+
+```{r cleaning_the_text}
+clean_txt <- trimws(unlist(result_list$result)) %>% 
+  gsub("[\r\n]", "",.) 
+
+print(clean_txt)
 
 
+```
+
+Now you could use the inbuilt string functions in the package to strip the text further:
+
+```{r trimming_text}
+# Extracted string
+NHSDataDictionaRy::left_xl(clean_txt, 20)
+
+```
+
+---
+background-image: url(man/figures/practice.jpg)
+# Practice time - 10 minutes
+Have a go at finding a component from the NHS Data Dictionary, or other website, to test out this functionality.
+
+---
+
+# Capstone Project - Working through the whole solution
+
+We will now utilise the tool to scrape the levels of COVID-19 by country, as I know it has been a hard year and we are getting there:
+
+```{r nhs_r_comm_site}
+xpath <- '//*[@id="main_table_countries_today"]'
+url <- "https://www.worldometers.info/coronavirus/"
+
+covid19 <- NHSDataDictionaRy::tableR(url=url, xpath=xpath) %>% 
+  select(-c("#"))
+
+```
 
 
