@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta name="author" content="Gary Hutson - Senior Data Scientist" />
     <meta name="date" content="2021-04-10" />
+    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
     <link rel="stylesheet" href="css/mango.css" type="text/css" />
     <link rel="stylesheet" href="css/mango-fonts.css" type="text/css" />
@@ -24,14 +25,6 @@ class: center, middle, inverse, title-slide
 
 
 
-
-background-image: url(man/figures/nhs-slide.png)
-background-size: cover
-font-color: red
-class: center, bottom, inverse
-## Welcome to the NHSDataDictionaRy package
-
----
 ## Introduction
 Welcome to the NHSDataDictionaRy workshop. Today we will learn how to work with the data dictionary for NHS lookup tasks, as well as how to extend the package to work with any website. The concentration of the workshop will be broken down as such:
 
@@ -44,7 +37,18 @@ Welcome to the NHSDataDictionaRy workshop. Today we will learn how to work with 
 - In general, a whistle stop tour of web scraping and how to do this with ease with the package
 
 ---
-class: inverse, middle, left
+## Watch our previous webinar on how to use this package
+This was taken from a webinar we recorded a how to guide from the launch of the NHSDataDictionaRy package. This may be useful for referring to, but most of what is covered in the video will be in today's workshop. 
+&lt;br&gt;&lt;/br&gt;
+
+
+&lt;iframe width="600" height="400" src="https://www.youtube.com/embed/MqCFHCbTORs" align="left" title="NHSDataDictionaRy tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
+
+
+
+
+---
+class: inverse, middle, left, hide-logo
 # Loading libraries
 
 ---
@@ -65,57 +69,161 @@ packrat:::recursivePackageDependencies("NHSDataDictionaRy", lib.loc = .libPaths(
 ```
 
 ```
-##  [1] "R6"         "askpass"    "cli"        "crayon"     "curl"      
-##  [6] "dplyr"      "ellipsis"   "fansi"      "generics"   "glue"      
-## [11] "httr"       "jsonlite"   "lifecycle"  "magrittr"   "mime"      
-## [16] "openssl"    "pillar"     "pkgconfig"  "purrr"      "rlang"     
-## [21] "rvest"      "selectr"    "stringi"    "stringr"    "sys"       
-## [26] "tibble"     "tidyselect" "utf8"       "vctrs"      "xml2"
+##  [1] "R6"         "askpass"    "cli"        "crayon"     "curl"       "dplyr"      "ellipsis"   "fansi"      "generics"  
+## [10] "glue"       "httr"       "jsonlite"   "lifecycle"  "magrittr"   "mime"       "openssl"    "pillar"     "pkgconfig" 
+## [19] "purrr"      "rlang"      "rvest"      "selectr"    "stringi"    "stringr"    "sys"        "tibble"     "tidyselect"
+## [28] "utf8"       "vctrs"      "xml2"
 ```
 
 ---
-class: inverse, middle, left
+class: inverse, middle, left, hide-logo
 # Let's get scraping those data elements
 
 ---
-## Starting with the nhs_data_elements() function
+# Starting with the nhs_data_elements() function
 
 To retrieve the list of currrent NHS lookups in the table finder we use the underlying function:
 
 
 ```r
-NHSDataDictionaRy::nhs_data_elements()
+nhs_data_table &lt;- nhs_data_elements()
 ```
 
-```
-## # A tibble: 2,715 x 6
-##    link_name     url       full_url    xpath_nat_code    xpath_default_cod~
-##    &lt;chr&gt;         &lt;chr&gt;     &lt;chr&gt;       &lt;chr&gt;             &lt;chr&gt;             
-##  1 ABBREVIATED ~ data_ele~ https://da~ "//*[@id=\"eleme~ "//*[@id=\"elemen~
-##  2 ABDOMINAL X-~ data_ele~ https://da~ "//*[@id=\"eleme~ "//*[@id=\"elemen~
-##  3 ABDOMINAL X-~ data_ele~ https://da~ "//*[@id=\"eleme~ "//*[@id=\"elemen~
-##  4 ABDOMINAL X-~ data_ele~ https://da~ "//*[@id=\"eleme~ "//*[@id=\"elemen~
-##  5 ABLATIVE THE~ data_ele~ https://da~ "//*[@id=\"eleme~ "//*[@id=\"elemen~
-##  6 ABNORMALITY ~ data_ele~ https://da~ "//*[@id=\"eleme~ "//*[@id=\"elemen~
-##  7 ACCESSIBLE I~ data_ele~ https://da~ "//*[@id=\"eleme~ "//*[@id=\"elemen~
-##  8 ACCESSIBLE I~ data_ele~ https://da~ "//*[@id=\"eleme~ "//*[@id=\"elemen~
-##  9 ACCESSIBLE I~ data_ele~ https://da~ "//*[@id=\"eleme~ "//*[@id=\"elemen~
-## 10 ACCESSIBLE I~ data_ele~ https://da~ "//*[@id=\"eleme~ "//*[@id=\"elemen~
-## # ... with 2,705 more rows, and 1 more variable: xpath_also_known &lt;chr&gt;
-```
----
 This function will then return the full list of data elements the package has scraped from the [NHS Data Dictionary website](https://www.datadictionary.nhs.uk/). 
 
 An example of what has been scraped is on the next slide.
 
-## Working with the scraped values
+---
 
-These scraped values will allow us to access the XPath elements of the website directly (don't worry if you don't know what an XPath is, we will get to that later on).
+# Working with the scraped values
+
+These scraped values will allow us to access the XPath elements of the website directly (don't worry if you don't know what an XPath is, we will get to that later on). To pull down a lookup table using the nhs_data_elements master reference we can use the TableR function to achieve this:
+
+## Getting the Activity Treatment Function Codes
+
+
+```r
+# Filter the table
+act_treatment_function &lt;- nhs_data_table %&gt;% 
+  dplyr::filter(link_name == "ACTIVITY TREATMENT FUNCTION CODE") 
+```
+
+On the next slide you will see this has returned the lookup that I require:
+
+---
+
+
+```r
+# Use the TableR function to pull back the data table
+act_treat_lookup &lt;- NHSDataDictionaRy::tableR(url=act_treatment_function$full_url,
+                          xpath=act_treatment_function$xpath_nat_code,
+                          title="NHS Hospital Activity Treatment Function Code")
+
+print(head(act_treat_lookup,5))
+```
+
+```
+## # A tibble: 5 x 4
+##   Code  Description                Dict_Type                                     DttmExtracted      
+##   &lt;chr&gt; &lt;chr&gt;                      &lt;chr&gt;                                         &lt;dttm&gt;             
+## 1 100   General Surgery Service    NHS Hospital Activity Treatment Function Code 2021-10-26 12:21:24
+## 2 101   Urology Service            NHS Hospital Activity Treatment Function Code 2021-10-26 12:21:24
+## 3 102   Transplant Surgery Service NHS Hospital Activity Treatment Function Code 2021-10-26 12:21:24
+## 4 103   Breast Surgery Service     NHS Hospital Activity Treatment Function Code 2021-10-26 12:21:24
+## 5 104   Colorectal Surgery Service NHS Hospital Activity Treatment Function Code 2021-10-26 12:21:24
+```
+This lookup will return the lookup table needed.
+---
+## What if the element is not returned?
+
+I include an example of when an element is not returned, as not all elements from the list have corresponding HTML data tables to extract. A worked example is below:
+
+
+```r
+# Filter the table
+abb_ment_test_score &lt;- nhs_data_table %&gt;% 
+  dplyr::filter(link_name == "ABBREVIATED MENTAL TEST SCORE") 
+
+# This will show a NULL return, as there is no HTML table present
+null_output &lt;- NHSDataDictionaRy::tableR(abb_ment_test_score$full_url,
+                          abb_ment_test_score$xpath_nat_code)
+```
+
+```
+## HTML Table does not exist for this URL.
+## Check the URL online at:
+## https://datadictionary.nhs.uk/data_elements/abbreviated_mental_test_score.html.
+```
+This shows a ***NULL*** return, as there is no HTML present for the national code specified. This can be highlighted by using the NHS Data Dictionary website to highlight this.
+
+---
+## Checking the NHS Data Dictionary website
+
+.pull-left[
+&lt;img src="man/figures/NHSWebsiteDD1.png" alt="drawing" width="700" height="300"/&gt;
+]
+
+.pull-right[
+You can see that the website contains no national code table, thus the message.
+
+You will not be able to retrieve these elements from the site, so the package presents you with a warning that these HTML table tables do not exist. 
+
+This is supposed to be informative and will allow you then to quickly inspect other items of interest.
+
+]
+
+---
+background-image: url(man/figures/practice.jpg)
+
+
+---
+## Introducing a quicker way to retrieve elements
+
+Until now we have been working long hand and finding with retrieving the list of lookups and then using the TableR function. There is a more simple function in the package to use to do this, but I wanted to get you familiar with using the returned elements such as the URL and XPath, because we will come on to this again later.
+
+### nhs_table_findeR to the rescue
+
+
+```r
+tfc &lt;- NHSDataDictionaRy::nhs_table_findeR("ACTIVITY TREATMENT FUNCTION CODE",
+                                           title="Treatment Function Code")
+
+glimpse(tfc)
+```
+
+```
+## Rows: 184
+## Columns: 4
+## $ Code          &lt;chr&gt; "100", "101", "102", "103", "104", "105", "106", "107", "108", "109", "110", "111", "113", "115", "1~
+## $ Description   &lt;chr&gt; "General Surgery Service", "Urology Service", "Transplant Surgery Service", "Breast Surgery Service"~
+## $ Dict_Type     &lt;chr&gt; "Treatment Function Code", "Treatment Function Code", "Treatment Function Code", "Treatment Function~
+## $ DttmExtracted &lt;dttm&gt; 2021-10-26 12:21:25, 2021-10-26 12:21:25, 2021-10-26 12:21:25, 2021-10-26 12:21:25, 2021-10-26 12:2~
+```
+
+This function replaces the convoluted code we used earlier. 
+
+---
+## Using the lookup to join on to hospital data
+We have this lookup and now we will generate some hospital data to match with our lookups:
+
+```r
+spec_code &lt;- rep(as.character(c(101,102,103,104,105,106,107, 108)), 12)
+length(spec_code)
+```
+
+```
+## [1] 96
+```
+
+```r
+attends &lt;- round(rnorm(length(spec_code), 500, 50))
+```
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
-"highlightStyle": "google",
+"highlightStyle": "github",
 "highlightLines": true,
 "seal": false,
 "self_contained": true,
@@ -205,6 +313,33 @@ if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   }
   preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
 })(document);</script>
+<style>
+.logo {
+  background-image: url(../man/figures/NHSRComm.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    //':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
 
 <script>
 slideshow._releaseMath = function(el) {

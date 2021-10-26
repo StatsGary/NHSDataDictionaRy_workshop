@@ -6,26 +6,26 @@ date: "04/10/2021"
 output:
   
   xaringan::moon_reader:
-    # includes: 
-      #after_body: 
-        #- insert-logo.html
+    includes: 
+      after_body: 
+        - html/insert-logo.html
     css:
       - default
       - css/mango.css
       - css/mango-fonts.css
     lib_dir: libs
     nature:
-      highlightStyle: google
+      highlightStyle: github
       highlightLines: true
       seal: false
       self_contained: true
       highlightLanguage: ["r"]
       countIncrementalSlides: false
       ratio: "16:9"
+
 ---
 
 ``` {r setup, include=FALSE}
-library(knitr)
 library(tidyverse)
 library(NHSDataDictionaRy)
 #devtools::install_github("gadenbuie/xaringanExtra")
@@ -34,14 +34,6 @@ library(xaringanExtra)
 ```
 
 
-
-background-image: url(man/figures/nhs-slide.png)
-background-size: cover
-font-color: red
-class: center, bottom, inverse
-## Welcome to the NHSDataDictionaRy package
-
----
 ## Introduction
 Welcome to the NHSDataDictionaRy workshop. Today we will learn how to work with the data dictionary for NHS lookup tasks, as well as how to extend the package to work with any website. The concentration of the workshop will be broken down as such:
 
@@ -54,7 +46,18 @@ Welcome to the NHSDataDictionaRy workshop. Today we will learn how to work with 
 - In general, a whistle stop tour of web scraping and how to do this with ease with the package
 
 ---
-class: inverse, middle, left
+## Watch our previous webinar on how to use this package
+This was taken from a webinar we recorded a how to guide from the launch of the NHSDataDictionaRy package. This may be useful for referring to, but most of what is covered in the video will be in today's workshop. 
+<br></br>
+
+
+<iframe width="600" height="400" src="https://www.youtube.com/embed/MqCFHCbTORs" align="left" title="NHSDataDictionaRy tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+
+
+---
+class: inverse, middle, left, hide-logo
 # Loading libraries
 
 ---
@@ -73,30 +76,116 @@ packrat:::recursivePackageDependencies("NHSDataDictionaRy", lib.loc = .libPaths(
 ```
 
 ---
-class: inverse, middle, left
+class: inverse, middle, left, hide-logo
 # Let's get scraping those data elements
 
 ---
-## Starting with the nhs_data_elements() function
+# Starting with the nhs_data_elements() function
 
 To retrieve the list of currrent NHS lookups in the table finder we use the underlying function:
 
 ```{r table_finder}
 
-NHSDataDictionaRy::nhs_data_elements()
+nhs_data_table <- nhs_data_elements()
 ```
----
+
 This function will then return the full list of data elements the package has scraped from the [NHS Data Dictionary website](https://www.datadictionary.nhs.uk/). 
 
 An example of what has been scraped is on the next slide.
 
-## Working with the scraped values
+---
 
-These scraped values will allow us to access the XPath elements of the website directly (don't worry if you don't know what an XPath is, we will get to that later on).
+# Working with the scraped values
+
+These scraped values will allow us to access the XPath elements of the website directly (don't worry if you don't know what an XPath is, we will get to that later on). To pull down a lookup table using the nhs_data_elements master reference we can use the TableR function to achieve this:
+
+## Getting the Activity Treatment Function Codes
+
+```{r table_r_working_with_table}
+
+# Filter the table
+act_treatment_function <- nhs_data_table %>% 
+  dplyr::filter(link_name == "ACTIVITY TREATMENT FUNCTION CODE") 
+```
+
+On the next slide you will see this has returned the lookup that I require:
+
+---
+
+```{r lookup}
+# Use the TableR function to pull back the data table
+act_treat_lookup <- NHSDataDictionaRy::tableR(url=act_treatment_function$full_url,
+                          xpath=act_treatment_function$xpath_nat_code,
+                          title="NHS Hospital Activity Treatment Function Code")
+
+print(head(act_treat_lookup,5))
+
+```
+This lookup will return the lookup table needed.
+---
+## What if the element is not returned?
+
+I include an example of when an element is not returned, as not all elements from the list have corresponding HTML data tables to extract. A worked example is below:
+
+```{r table_r_working_with_table_error}
+
+# Filter the table
+abb_ment_test_score <- nhs_data_table %>% 
+  dplyr::filter(link_name == "ABBREVIATED MENTAL TEST SCORE") 
+
+# This will show a NULL return, as there is no HTML table present
+null_output <- NHSDataDictionaRy::tableR(abb_ment_test_score$full_url,
+                          abb_ment_test_score$xpath_nat_code)
 
 
+```
+This shows a ***NULL*** return, as there is no HTML present for the national code specified. This can be highlighted by using the NHS Data Dictionary website to highlight this.
+
+---
+## Checking the NHS Data Dictionary website
+
+.pull-left[
+<img src="man/figures/NHSWebsiteDD1.png" alt="drawing" width="700" height="300"/>
+]
+
+.pull-right[
+You can see that the website contains no national code table, thus the message.
+
+You will not be able to retrieve these elements from the site, so the package presents you with a warning that these HTML table tables do not exist. 
+
+This is supposed to be informative and will allow you then to quickly inspect other items of interest.
+
+]
+
+---
+background-image: url(man/figures/practice.jpg)
 
 
+---
+## Introducing a quicker way to retrieve elements
 
+Until now we have been working long hand and finding with retrieving the list of lookups and then using the TableR function. There is a more simple function in the package to use to do this, but I wanted to get you familiar with using the returned elements such as the URL and XPath, because we will come on to this again later.
 
+### nhs_table_findeR to the rescue
+
+```{r quicker_way_to_ret_elements}
+tfc <- NHSDataDictionaRy::nhs_table_findeR("ACTIVITY TREATMENT FUNCTION CODE",
+                                           title="Treatment Function Code")
+
+glimpse(tfc)
+
+```
+
+This function replaces the convoluted code we used earlier. 
+
+---
+## Using the lookup to join on to hospital data
+We have this lookup and now we will generate some hospital data to match with our lookups:
+```{r generated_data}
+
+spec_code <- rep(as.character(c(101,102,103,104,105,106,107, 108)), 12)
+length(spec_code)
+attends <- round(rnorm(length(spec_code), 500, 50))
+                          
+```
 
