@@ -1,4 +1,4 @@
-# XHS R Workshop
+# NHS-R Workshop - NHSDataDictionaRy workshop
 Content for the NHS-R workshop on the use of the NHSDataDictionaRy web scraping tool. 
 
 ## Contents included
