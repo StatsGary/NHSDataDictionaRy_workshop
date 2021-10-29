@@ -370,7 +370,10 @@ Have a go at finding a component from the NHS Data Dictionary, or other website,
 
 We will now utilise the tool to scrape the levels of COVID-19 by country, as I know it has been a hard year and we are getting there:
 
+## Data Preparation
+
 ```{r nhs_r_comm_site}
+library(purrr)
 xpath <- '//*[@id="main_table_countries_today"]'
 url <- "https://www.worldometers.info/coronavirus/"
 
@@ -378,7 +381,42 @@ covid19 <- NHSDataDictionaRy::tableR(url=url, xpath=xpath) %>%
   select(-c("#"))
 
 c19_reduced <- covid19 %>% 
-  select(TotalCases, NewCases, TotalRecovered, TotalDeaths, TotalTests, `Country,Other`, Continent)
+  select(TotalCases, TotalRecovered, TotalDeaths, TotalTests, `Country,Other`, Continent)
+# Map through the data frame and strip out the comman from the text and make numeric
+```
+
+---
+
+## Data Preparation (continued)
+
+The data returns character strings, so I will use the first 4 columns from my selection above:
+
+```{r data_prep}
+c19_numerics <- c19_reduced[,1:4] %>% 
+  suppressWarnings(purrr::map_dfr(~ as.numeric(gsub(",", "", .)))) %>% 
+  #Fill in NAs if they are zero
+  purrr::map_dfr(~ ifelse(is.na(.),0, .))
+
+```
+
+We then ***purrr::map_dfr*** over the data frame to convert to numeric and strip out the commas and then to fill in the NA values with a zero if they are missing. Finally, I will join the data back on to the original frame to bring back in the country:
+
+```{r bring_in_country}
+c19_reduced %>% dplyr::select(`Country,Other`, Continent)
+
+
+```
+
+  
+  
+
+
+
+
+
+
+
+
 
 ```
 
