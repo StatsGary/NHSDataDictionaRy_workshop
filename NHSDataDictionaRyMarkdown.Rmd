@@ -255,7 +255,7 @@ We could use the tableR function to scrape the results of the Championship table
 The next step would be to copy the xpath and url into a variable, so we can differentiate them later.
 
 ```{r google_xpath_football}
-football_xpath <- '//*[@id="u07907911180832272"]/div/div[2]/div/div/div[2]/div/div/table'
+football_xpath <- '//*[@id="u7035812909699189"]/div/div[2]/div/div/div[2]/div/div/table'
 url <- "https://www.bbc.co.uk/sport/football/championship/table"
 ```
 
@@ -311,7 +311,7 @@ ggplotly(plot)
 
 ---
 background-image: url(man/figures/practice.jpg)
-# Practice time - 30 minutes
+# Practice time - 15 minutes
 Have a go at retrieving some Xpath data from any website. Find a data table and bring it into R with the TableR function.
 
 ---
@@ -376,6 +376,9 @@ url <- "https://www.worldometers.info/coronavirus/"
 
 covid19 <- NHSDataDictionaRy::tableR(url=url, xpath=xpath) %>% 
   select(-c("#"))
+
+c19_reduced <- covid19 %>% 
+  select(TotalCases, NewCases, TotalRecovered, TotalDeaths, TotalTests, `Country,Other`, Continent)
 
 ```
 
