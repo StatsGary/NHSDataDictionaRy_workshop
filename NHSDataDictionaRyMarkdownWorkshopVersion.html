@@ -1,39 +1,28 @@
----
-title: "NHSDataDictionaRy Workshop"
-subtitle: "NHS-R Community"
-author: "Gary Hutson - Senior Data Scientist"
-date: "04/10/2021"
-output:
-  
-  xaringan::moon_reader:
-    includes: 
-      after_body: 
-        - html/insert-logo.html
-    css:
-      - default
-      - css/mango.css
-      - css/mango-fonts.css
-    lib_dir: libs
-    nature:
-      highlightStyle: github
-      highlightLines: true
-      seal: false
-      self_contained: true
-      highlightLanguage: ["r"]
-      countIncrementalSlides: false
-      ratio: "16:9"
-  
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>NHSDataDictionaRy Workshop</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Gary Hutson - Senior Data Scientist" />
+    <meta name="date" content="2021-04-10" />
+    <script src="libs/header-attrs-2.11/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/mango.css" type="text/css" />
+    <link rel="stylesheet" href="css/mango-fonts.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# NHSDataDictionaRy Workshop
+## NHS-R Community
+### Gary Hutson - Senior Data Scientist
+### 04/10/2021
+
 ---
 
-``` {r setup, include=FALSE}
-library(tidyverse)
-library(NHSDataDictionaRy)
-#devtools::install_github("gadenbuie/xaringanExtra")
-library(xaringanExtra)
-library(ggplot2)
-library(plotly)
-library(purrr)
-```
+
+
 
 
 ## Introduction
@@ -50,16 +39,16 @@ Welcome to the NHSDataDictionaRy workshop. Today we will learn how to work with 
 ]
 
 .pull-right[
-   <a href="https://cran.r-project.org/web/packages/NHSDataDictionaRy/"><img src = "man/figures/NHSDataDict.png"></a>
+   &lt;a href="https://cran.r-project.org/web/packages/NHSDataDictionaRy/"&gt;&lt;img src = "man/figures/NHSDataDict.png"&gt;&lt;/a&gt;
 ]
 
 ---
 ## Watch our previous webinar on how to use this package
 This was taken from a webinar we recorded a how to guide from the launch of the NHSDataDictionaRy package. This may be useful for referring to, but most of what is covered in the video will be in today's workshop. 
-<br></br>
+&lt;br&gt;&lt;/br&gt;
 
 
-<iframe width="600" height="400" src="https://www.youtube.com/embed/MqCFHCbTORs" align="left" title="NHSDataDictionaRy tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+&lt;iframe width="600" height="400" src="https://www.youtube.com/embed/MqCFHCbTORs" align="left" title="NHSDataDictionaRy tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen&gt;&lt;/iframe&gt;
 
 
 ---
@@ -71,15 +60,14 @@ class: inverse, middle, left, hide-logo
 
 To load the libraries needed for this session you will need to bring in the following:
 
-```{r comment='#'}
+
+```r
 library(NHSDataDictionaRy)
 ```
 
 This will bring in the libraries needed to work with the package. The next step would be to check the dependencies in the package: 
 
-```{r avail_packs}
-packrat:::recursivePackageDependencies("NHSDataDictionaRy", lib.loc = .libPaths())
-```
+
 
 ---
 class: inverse, middle, left, hide-logo
@@ -90,10 +78,7 @@ class: inverse, middle, left, hide-logo
 
 To retrieve the list of currrent NHS lookups in the table finder we use the underlying function:
 
-```{r table_finder}
 
-nhs_data_table <- nhs_data_elements()
-```
 
 This function will then return the full list of data elements the package has scraped from the [NHS Data Dictionary website](https://www.datadictionary.nhs.uk/). 
 
@@ -107,51 +92,27 @@ These scraped values will allow us to access the XPath elements of the website d
 
 ## Getting the Activity Treatment Function Codes
 
-```{r table_r_working_with_table}
 
-# Filter the table
-act_treatment_function <- nhs_data_table %>% 
-  dplyr::filter(link_name == "ACTIVITY TREATMENT FUNCTION CODE") 
-```
 
 On the next slide you will see this has returned the lookup that I require:
 
 ---
 
-```{r lookup}
-# Use the TableR function to pull back the data table
-act_treat_lookup <- NHSDataDictionaRy::tableR(url=act_treatment_function$full_url,
-                          xpath=act_treatment_function$xpath_nat_code,
-                          title="NHS Hospital Activity Treatment Function Code")
 
-print(head(act_treat_lookup,5))
-
-```
 This lookup will return the lookup table needed.
 ---
 ## What if the element is not returned?
 
 I include an example of when an element is not returned, as not all elements from the list have corresponding HTML data tables to extract. A worked example is below:
 
-```{r table_r_working_with_table_error}
 
-# Filter the table
-abb_ment_test_score <- nhs_data_table %>% 
-  dplyr::filter(link_name == "ABBREVIATED MENTAL TEST SCORE") 
-
-# This will show a NULL return, as there is no HTML table present
-null_output <- NHSDataDictionaRy::tableR(abb_ment_test_score$full_url,
-                          abb_ment_test_score$xpath_nat_code)
-
-
-```
 This shows a ***NULL*** return, as there is no HTML present for the national code specified. This can be highlighted by using the NHS Data Dictionary website to highlight this.
 
 ---
 ## Checking the NHS Data Dictionary website
 
 .pull-left[
-<img src="man/figures/NHSWebsiteDD1.png" alt="drawing" width="700" height="300"/>
+&lt;img src="man/figures/NHSWebsiteDD1.png" alt="drawing" width="700" height="300"/&gt;
 ]
 
 .pull-right[
@@ -175,32 +136,14 @@ Until now we have been working long hand and finding with retrieving the list of
 
 ### nhs_table_findeR to the rescue
 
-```{r quicker_way_to_ret_elements}
-tfc <- NHSDataDictionaRy::nhs_table_findeR("ACTIVITY TREATMENT FUNCTION CODE",
-                                           title="Treatment Function Code")
 
-glimpse(tfc)
-
-```
 
 This function replaces the convoluted code we used earlier. 
 
 ---
 ## Using the lookup to join on to hospital data
 We have this lookup and now we will generate some hospital data to match with our lookups:
-```{r generated_data}
 
-spec_code <- rep(as.character(c(101,102,103,104,105,106,107, 108)), 12)
-attends <- round(rnorm(length(spec_code), 500, 50))
-breaches <- round(rnorm(length(spec_code), 40, 3))
-admits <- round(rnorm(length(spec_code), 300, 20))
-month <- rep(c("Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug", "Sept",
-               "Oct", "Nov", "Dec"),8)
-# Combine these atomic vectors into tibble
-ed_act_by_month <- tibble(spec_code, attends, breaches, admits, month)
-glimpse(ed_act_by_month)
-                          
-```
 
 
 ---
@@ -208,16 +151,7 @@ glimpse(ed_act_by_month)
 
 Now we have some data to match, we can join our dynamic lookup from the web on to the lookup:
 
-```{r join_on activity_data}
-# Get our tfc and we are going to join this to specialty code
-joined_activity = ed_act_by_month %>% 
-  dplyr::left_join(tfc, by = c("spec_code"="Code")) %>% 
-  dplyr::select(everything(), -c(Dict_Type, DttmExtracted))
 
-glimpse(joined_activity)
-
-
-```
 
 
 ---
@@ -229,18 +163,7 @@ Try joining the main specialty code to this data
 ## Practice solution
 This is pretty simple really - I just need to use the nhs_table_findeR function to get my lookup, if you are not sure what the string is to pass, use the nhs_data_elements() function to get all the strings. 
 
-```{r practice_solution_two}
-main_spec <- NHSDataDictionaRy::nhs_table_findeR("CARE PROFESSIONAL MAIN SPECIALTY CODE",
-                                    title="Main Specialty")
 
-# Join our main specialty on to the ed_act_by_month tibble
-main_spec_with_act <- ed_act_by_month %>% 
-  dplyr::left_join(main_spec, by= c("spec_code"="Code")) %>% 
-  dplyr::select(everything(), -c(Dict_Type, DttmExtracted))
-
-glimpse(main_spec_with_act)
-
-```
 
 
 ---
@@ -251,67 +174,30 @@ class: inverse, middle, left, hide-logo
 ## Scraping the Championship Football table
 We could use the tableR function to scrape the results of the Championship table, here we will have to do some text processing as well to clean this up. I want to see how good or bad my team Nottingham Forest are doing.To get the Xpath I will need to use the Inspect button in google to copy this:
 
-<img src="man/figures/football_gif.gif" alt="drawing" height="350px" width="700px"/>
+&lt;img src="man/figures/football_gif.gif" alt="drawing" height="350px" width="700px"/&gt;
 
 ---
 ## Using the retrieved Xpath from Google
 
 The next step would be to copy the xpath and url into a variable, so we can differentiate them later.
 
-```{r google_xpath_football}
-football_xpath <- '//*[@id="u7035812909699189"]/div/div[2]/div/div/div[2]/div/div/table'
-url <- "https://www.bbc.co.uk/sport/football/championship/table"
-```
+
 
 Now let's get the HTML table from the website. Important to note that if it does not end in **/table** at the end of the url then it cannot be used with the TableR function, as it is not an HTML table object. 
 
-```{r google_football_table}
-football_table <- NHSDataDictionaRy::tableR(url=url, 
-                          xpath=football_xpath,
-                          title="English Championship League Standings")
 
-head(football_table, 3)
-
-```
 
 ---
 ## Let's clean the table up
 The first stage would be to drop some of the less informative columns:
 
-```{r drop_cols_footy}
-# Convert to integer
-ftball_reduced <- football_table %>% 
-  dplyr::select(-c(V1, V2, Form, Dict_Type,
-                   DttmExtracted)) %>% #Purge the none informative columns
-  dplyr::slice(1:nrow(football_table)-1) %>% # Get rid of the last row
-  dplyr::add_tally()#Filter out team 
 
-#Remove team
-minus_team <- ftball_reduced %>% 
-  dplyr::select(!contains("Team"))
-
-# Convert all fields to integer
-minus_team <- data.frame(sapply(minus_team, as.integer))
-# Bind back together
-
-football_table <- cbind(Team=ftball_reduced$Team, minus_team)
-
-```
 
 
 
 ---
 ## Viewing the data on a scatter chart to explore key metrics
-```{r glimpsing_the_table, out.width='100%', out.height='55%'}
 
-plot <- ggplot(football_table, 
-       aes(x=W, y=Pts, color=factor(Team))) + geom_point() +
-  theme_minimal()
-
-ggplotly(plot)
-
-
-```
 
 ---
 background-image: url(man/figures/practice.jpg)
@@ -326,42 +212,17 @@ class: inverse, middle, left, hide-logo
 
 ## Extracting text from the NHS Data Dictionary website
 
-```{r texter_extraction}
 
-acc_type <- nhs_data_table %>% 
-  filter(link_name=='ACCOMMODATION TYPE')
-#browseURL(acc_type$full_url)
-
-# Specify the custom element obtained from the inspect function
-xpath <- '//*[@id="element_accommodation_type"]/div/p'
-result_list <- NHSDataDictionaRy::xpathTextR(url=acc_type$full_url, 
-                              xpath = xpath)
-
-str(result_list)
-                              
-
-```
 
 ---
 ## Cleaning the extracted text
 The next stage is to clean the extracted text from the list element **result**:
 
-```{r cleaning_the_text}
-clean_txt <- trimws(unlist(result_list$result)) %>% 
-  gsub("[\r\n]", "",.) 
 
-print(clean_txt)
-
-
-```
 
 Now you could use the inbuilt string functions in the package to strip the text further:
 
-```{r trimming_text}
-# Extracted string
-NHSDataDictionaRy::left_xl(clean_txt, 20)
 
-```
 
 ---
 background-image: url(man/figures/practice.jpg)
@@ -376,17 +237,7 @@ We will now utilise the tool to scrape the levels of COVID-19 by country, as I k
 
 ## Data Preparation
 
-```{r nhs_r_comm_site}
-xpath <- '//*[@id="main_table_countries_today"]'
-url <- "https://www.worldometers.info/coronavirus/"
 
-covid19 <- NHSDataDictionaRy::tableR(url=url, xpath=xpath) %>% 
-  select(-c("#"))
-
-c19_reduced <- covid19 %>% 
-  select(TotalCases, TotalRecovered, TotalDeaths, TotalTests, NewCases, `Country,Other`, Continent)
-# Map through the data frame and strip out the comman from the text and make numeric
-```
 
 ---
 
@@ -394,14 +245,7 @@ c19_reduced <- covid19 %>%
 
 The data returns character strings, so I will use the first 4 columns from my selection above:
 
-```{r data_prep}
-c19_numerics <- c19_reduced[,1:5] %>% 
-  purrr::map_dfr(~ as.numeric(gsub(",", "", .))) %>% #Get rid of 
-  purrr::map_dfr(~as.numeric(gsub("+", "", .))) %>% # Get rid of + symbol
-  #Fill in NAs if they are zero
-  purrr::map_dfr(~ ifelse(is.na(.),0, .))
 
-```
 
 We then ***purrr::map_dfr*** over the data frame to convert to numeric and strip out the commas and then to fill in the NA values with a zero if they are missing. 
 
@@ -411,18 +255,7 @@ We then ***purrr::map_dfr*** over the data frame to convert to numeric and strip
 
 Finally, I will join the data back on to the original frame to bring back in the country:
 
-```{r bring_in_country}
-c19_final <- cbind(
-  c19_reduced <- c19_reduced %>% dplyr::select(`Country,Other`, Continent),
-  c19_numerics
-) %>% 
-  dplyr::rename(Country=`Country,Other`) %>% 
-  dplyr::filter(Country!="",
-                !str_detect(Country, "Total"), 
-                Country!="World")
 
-
-```
 
 Here we:
 
@@ -434,10 +267,7 @@ Here we:
 ## The final dataset
 This is the final dataset ready to be worked on with R:
 
-```{r the_final_ds}
-print(head(c19_final,5))
 
-```
   
 With this dataset we will create some visuals. We could even store these in a data table with a time stamp over time to get the relevant days COVID-19 results.
 
@@ -446,13 +276,7 @@ With this dataset we will create some visuals. We could even store these in a da
 
 We'll use our final data frame that we generated to create some visuals of the COVID rates, perhaps a scatter chart would be good for this purpose to see the ratio of total cases to total deaths.
 
-```{r visualise}
 
-highest_cases <- c19_final %>% 
-  dplyr::arrange(desc(TotalCases)) %>% 
-  dplyr::filter(Country!=Continent) 
-
-```
 
 On the next slide we will visualise the results:
 
@@ -460,14 +284,7 @@ On the next slide we will visualise the results:
 
 ## Visualising the results
 
-```{r graph_the_results,out.width='30%'}
-options(scipen=999)
-ggplot(highest_cases, aes(TotalDeaths,TotalCases)) + 
- geom_point(aes(color=factor(Country))) + theme_minimal() +
-  theme(legend.position = "none") +
-  labs(x="Total COVID-19 Deaths", y="Total COVID-19 Cases")
 
-```
 
 ---
 class: inverse, middle, left, hide-logo
@@ -478,3 +295,157 @@ class: inverse, middle, left, hide-logo
 
 
 
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"seal": false,
+"self_contained": true,
+"highlightLanguage": "r",
+"countIncrementalSlides": false,
+"ratio": "16:9"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+<style>
+.logo {
+  background-image: url(../man/figures/NHSRComm.png);
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+  top: 1em;
+  right: 1em;
+  width: 110px;
+  height: 128px;
+  z-index: 0;
+}
+</style>
+
+<script>
+document
+  .querySelectorAll(
+    '.remark-slide-content' +
+    ':not(.title-slide)' +
+    // add additional classes to exclude here, e.g.
+    //':not(.inverse)' +
+    ':not(.hide-logo)'
+  )
+  .forEach(el => {
+    el.innerHTML += '<div class="logo"></div>';
+  });
+</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

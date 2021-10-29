@@ -4,8 +4,6 @@
 */
 
 
-
-
 /*-- LINKS/ANCHORS --*/
 
 a {
@@ -205,4 +203,18 @@ blockquote {
 .red        { color:   #DA291C }
 .warmyellow { color:   #FFB81C }
 .move       { margin-left: 100px}
+
+
+.pull-right{
+  /*padding-left: 60px;*/
+  margin-left: 60px;
+}
+
+
+
+
+
+
+
+
 
