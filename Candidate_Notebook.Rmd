@@ -1,0 +1,49 @@
+---
+title: "NHSDataDictionaRy - Candidate Notebook"
+author: "Gary Hutson"
+date: "29/10/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(NHSDataDictionaRy)
+library(ggplot2)
+library(plotly)
+library(purrr)
+```
+
+
+# Working with the nhs_data_elements() function
+
+```{r nhs_data_elems}
+# Your code here
+
+
+```
+
+
+# Scraping with the in built functionality in TableR
+
+```{r scraping_in_earnest}
+#Your code here
+```
+
+# Checking NHS website to validate
+Tutor lead session of checking the elements on the website to make sure what we have scraped is correct.
+
+
+## Task 1 - Have a go at scraping some contents from the website
+Have a go at scraping some text from the website. Code below:
+
+```{r candidate_scraping_nhs_data_dict}
+
+
+```
+
+## Quicker way to retrieve NHS Data Lookups with nhs_tableR
+
+```{r working with nhs_table_r}
+
+```

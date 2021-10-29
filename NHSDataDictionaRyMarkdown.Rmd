@@ -32,7 +32,7 @@ library(NHSDataDictionaRy)
 library(xaringanExtra)
 library(ggplot2)
 library(plotly)
-
+library(purrr)
 ```
 
 
@@ -40,10 +40,10 @@ library(plotly)
 Welcome to the NHSDataDictionaRy workshop. Today we will learn how to work with the data dictionary for NHS lookup tasks, as well as how to extend the package to work with any website. The concentration of the workshop will be broken down as such:
 
 - Getting familiar with the NHSDataDictionaRy package and all the underlying functions
-- Understanding the [nhs_data_elements()]() elements function and how to filter on this
+- Understanding the [nhs_data_elements()](https://rdrr.io/cran/NHSDataDictionaRy/man/nhs_data_elements.html) elements function and how to filter on this
 - Gather text from any website and perform some text cleaning operations on the text, using a combination of functions contained in the package
 - Using the [TableR](https://rdrr.io/cran/NHSDataDictionaRy/man/tableR.html) function to retrieve HTML tables from the data dictionary site and then extending this to other websites
-- Working with XPath website elements with the NHSDataDictionaRy package
+- Working with XPath website elements with the [NHSDataDictionaRy package](https://cran.r-project.org/web/packages/NHSDataDictionaRy/vignettes/introduction.html)
 - How to use the package and retrieve website elements
 - In general, a whistle stop tour of web scraping and how to do this with ease with the package
 
@@ -54,8 +54,6 @@ This was taken from a webinar we recorded a how to guide from the launch of the 
 
 
 <iframe width="600" height="400" src="https://www.youtube.com/embed/MqCFHCbTORs" align="left" title="NHSDataDictionaRy tutorial" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-
-
 
 
 ---
@@ -373,7 +371,6 @@ We will now utilise the tool to scrape the levels of COVID-19 by country, as I k
 ## Data Preparation
 
 ```{r nhs_r_comm_site}
-library(purrr)
 xpath <- '//*[@id="main_table_countries_today"]'
 url <- "https://www.worldometers.info/coronavirus/"
 
@@ -381,7 +378,7 @@ covid19 <- NHSDataDictionaRy::tableR(url=url, xpath=xpath) %>%
   select(-c("#"))
 
 c19_reduced <- covid19 %>% 
-  select(TotalCases, TotalRecovered, TotalDeaths, TotalTests, `Country,Other`, Continent)
+  select(TotalCases, TotalRecovered, TotalDeaths, TotalTests, NewCases, `Country,Other`, Continent)
 # Map through the data frame and strip out the comman from the text and make numeric
 ```
 
@@ -392,32 +389,86 @@ c19_reduced <- covid19 %>%
 The data returns character strings, so I will use the first 4 columns from my selection above:
 
 ```{r data_prep}
-c19_numerics <- c19_reduced[,1:4] %>% 
-  suppressWarnings(purrr::map_dfr(~ as.numeric(gsub(",", "", .)))) %>% 
+c19_numerics <- c19_reduced[,1:5] %>% 
+  purrr::map_dfr(~ as.numeric(gsub(",", "", .))) %>% #Get rid of 
+  purrr::map_dfr(~as.numeric(gsub("+", "", .))) %>% # Get rid of + symbol
   #Fill in NAs if they are zero
   purrr::map_dfr(~ ifelse(is.na(.),0, .))
 
 ```
 
-We then ***purrr::map_dfr*** over the data frame to convert to numeric and strip out the commas and then to fill in the NA values with a zero if they are missing. Finally, I will join the data back on to the original frame to bring back in the country:
+We then ***purrr::map_dfr*** over the data frame to convert to numeric and strip out the commas and then to fill in the NA values with a zero if they are missing. 
+
+
+---
+## Data Preparation (continued)
+
+Finally, I will join the data back on to the original frame to bring back in the country:
 
 ```{r bring_in_country}
-c19_reduced %>% dplyr::select(`Country,Other`, Continent)
+c19_final <- cbind(
+  c19_reduced <- c19_reduced %>% dplyr::select(`Country,Other`, Continent),
+  c19_numerics
+) %>% 
+  dplyr::rename(Country=`Country,Other`) %>% 
+  dplyr::filter(Country!="",
+                !str_detect(Country, "Total"), 
+                Country!="World")
 
 
 ```
 
-  
-  
+Here we:
 
+- Used cbind base R function to combine the reduced dataset and the numerical dataframe
+- We renamed the Country field
+- We then filtered out the blank countries and those where there is a total column
 
+---
+## The final dataset
+This is the final dataset ready to be worked on with R:
 
-
-
-
-
-
+```{r the_final_ds}
+print(head(c19_final,5))
 
 ```
+  
+With this dataset we will create some visuals. We could even store these in a data table with a time stamp over time to get the relevant days COVID-19 results.
+
+---
+## Visualising the results
+
+We'll use our final data frame that we generated to create some visuals of the COVID rates, perhaps a scatter chart would be good for this purpose to see the ratio of total cases to total deaths.
+
+```{r visualise}
+
+highest_cases <- c19_final %>% 
+  dplyr::arrange(desc(TotalCases)) %>% 
+  dplyr::filter(Country!=Continent) 
+
+```
+
+On the next slide we will visualise the results:
+
+---
+
+## Visualising the results
+
+```{r graph_the_results,out.width='30%'}
+options(scipen=999)
+ggplot(highest_cases, aes(TotalDeaths,TotalCases)) + 
+ geom_point(aes(color=factor(Country))) + theme_minimal() +
+  theme(legend.position = "none") +
+  labs(x="Total COVID-19 Deaths", y="Total COVID-19 Cases")
+
+```
+
+---
+class: inverse, middle, left, hide-logo
+# Questions?
+
+
+
+
 
 
