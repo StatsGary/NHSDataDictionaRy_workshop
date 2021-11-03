@@ -16,4 +16,9 @@ The contents of the workshop contain:
 
 ## Slides from the session
 
-The slides from the session are available here: 
+The content is available here:
+
+* [Workshop HTML slides](https://wp.me/aaEpoT-2hY) - covers all the content in the workshop
+* Supporting RMarkdown xaringan workbook for referencing the code examples
+
+
