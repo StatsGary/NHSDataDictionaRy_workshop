@@ -140,11 +140,11 @@ print(head(act_treat_lookup,5))
 ## # A tibble: 5 x 4
 ##   Code  Description                Dict_Type                 DttmExtracted      
 ##   &lt;chr&gt; &lt;chr&gt;                      &lt;chr&gt;                     &lt;dttm&gt;             
-## 1 100   General Surgery Service    NHS Hospital Activity Tr~ 2021-10-29 15:05:55
-## 2 101   Urology Service            NHS Hospital Activity Tr~ 2021-10-29 15:05:55
-## 3 102   Transplant Surgery Service NHS Hospital Activity Tr~ 2021-10-29 15:05:55
-## 4 103   Breast Surgery Service     NHS Hospital Activity Tr~ 2021-10-29 15:05:55
-## 5 104   Colorectal Surgery Service NHS Hospital Activity Tr~ 2021-10-29 15:05:55
+## 1 100   General Surgery Service    NHS Hospital Activity Tr~ 2021-11-03 08:58:46
+## 2 101   Urology Service            NHS Hospital Activity Tr~ 2021-11-03 08:58:46
+## 3 102   Transplant Surgery Service NHS Hospital Activity Tr~ 2021-11-03 08:58:46
+## 4 103   Breast Surgery Service     NHS Hospital Activity Tr~ 2021-11-03 08:58:46
+## 5 104   Colorectal Surgery Service NHS Hospital Activity Tr~ 2021-11-03 08:58:46
 ```
 This lookup will return the lookup table needed.
 ---
@@ -192,11 +192,11 @@ background-image: url(man/figures/practice.jpg)
 Have a go at extracting elements from the nhs_data_elements() and TableR functions.
 
 ---
-## Introducing a quicker way to retrieve elements
+# Introducing a quicker way to retrieve elements
 
 Until now we have been working long hand and finding with retrieving the list of lookups and then using the TableR function. There is a more simple function in the package to use to do this, but I wanted to get you familiar with using the returned elements such as the URL and XPath, because we will come on to this again later.
 
-### nhs_table_findeR to the rescue
+## nhs_table_findeR to the rescue
 
 
 ```r
@@ -212,7 +212,7 @@ glimpse(tfc)
 ## $ Code          &lt;chr&gt; "100", "101", "102", "103", "104", "105", "106", "107", ~
 ## $ Description   &lt;chr&gt; "General Surgery Service", "Urology Service", "Transplan~
 ## $ Dict_Type     &lt;chr&gt; "Treatment Function Code", "Treatment Function Code", "T~
-## $ DttmExtracted &lt;dttm&gt; 2021-10-29 15:05:56, 2021-10-29 15:05:56, 2021-10-29 15~
+## $ DttmExtracted &lt;dttm&gt; 2021-11-03 08:58:46, 2021-11-03 08:58:46, 2021-11-03 08~
 ```
 
 This function replaces the convoluted code we used earlier. 
@@ -222,6 +222,7 @@ This function replaces the convoluted code we used earlier.
 We have this lookup and now we will generate some hospital data to match with our lookups:
 
 ```r
+set.seed(123)
 spec_code &lt;- rep(as.character(c(101,102,103,104,105,106,107, 108)), 12)
 attends &lt;- round(rnorm(length(spec_code), 500, 50))
 breaches &lt;- round(rnorm(length(spec_code), 40, 3))
@@ -237,9 +238,9 @@ glimpse(ed_act_by_month)
 ## Rows: 96
 ## Columns: 5
 ## $ spec_code &lt;chr&gt; "101", "102", "103", "104", "105", "106", "107", "108", "101~
-## $ attends   &lt;dbl&gt; 477, 541, 448, 506, 477, 497, 502, 447, 507, 496, 571, 556, ~
-## $ breaches  &lt;dbl&gt; 37, 38, 43, 43, 39, 38, 39, 44, 38, 42, 44, 43, 39, 39, 37, ~
-## $ admits    &lt;dbl&gt; 294, 305, 296, 296, 310, 305, 311, 314, 331, 293, 298, 290, ~
+## $ attends   &lt;dbl&gt; 472, 488, 578, 504, 506, 586, 523, 437, 466, 478, 561, 518, ~
+## $ breaches  &lt;dbl&gt; 47, 45, 39, 37, 38, 41, 39, 39, 37, 40, 38, 35, 39, 43, 38, ~
+## $ admits    &lt;dbl&gt; 302, 282, 274, 340, 312, 275, 288, 276, 344, 326, 295, 311, ~
 ## $ month     &lt;chr&gt; "Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug",~
 ```
 
@@ -263,9 +264,9 @@ glimpse(joined_activity)
 ## Rows: 96
 ## Columns: 6
 ## $ spec_code   &lt;chr&gt; "101", "102", "103", "104", "105", "106", "107", "108", "1~
-## $ attends     &lt;dbl&gt; 477, 541, 448, 506, 477, 497, 502, 447, 507, 496, 571, 556~
-## $ breaches    &lt;dbl&gt; 37, 38, 43, 43, 39, 38, 39, 44, 38, 42, 44, 43, 39, 39, 37~
-## $ admits      &lt;dbl&gt; 294, 305, 296, 296, 310, 305, 311, 314, 331, 293, 298, 290~
+## $ attends     &lt;dbl&gt; 472, 488, 578, 504, 506, 586, 523, 437, 466, 478, 561, 518~
+## $ breaches    &lt;dbl&gt; 47, 45, 39, 37, 38, 41, 39, 39, 37, 40, 38, 35, 39, 43, 38~
+## $ admits      &lt;dbl&gt; 302, 282, 274, 340, 312, 275, 288, 276, 344, 326, 295, 311~
 ## $ month       &lt;chr&gt; "Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug~
 ## $ Description &lt;chr&gt; "Urology Service", "Transplant Surgery Service", "Breast S~
 ```
@@ -297,9 +298,9 @@ glimpse(main_spec_with_act)
 ## Rows: 96
 ## Columns: 6
 ## $ spec_code   &lt;chr&gt; "101", "102", "103", "104", "105", "106", "107", "108", "1~
-## $ attends     &lt;dbl&gt; 477, 541, 448, 506, 477, 497, 502, 447, 507, 496, 571, 556~
-## $ breaches    &lt;dbl&gt; 37, 38, 43, 43, 39, 38, 39, 44, 38, 42, 44, 43, 39, 39, 37~
-## $ admits      &lt;dbl&gt; 294, 305, 296, 296, 310, 305, 311, 314, 331, 293, 298, 290~
+## $ attends     &lt;dbl&gt; 472, 488, 578, 504, 506, 586, 523, 437, 466, 478, 561, 518~
+## $ breaches    &lt;dbl&gt; 47, 45, 39, 37, 38, 41, 39, 39, 37, 40, 38, 35, 39, 43, 38~
+## $ admits      &lt;dbl&gt; 302, 282, 274, 340, 312, 275, 288, 276, 344, 326, 295, 311~
 ## $ month       &lt;chr&gt; "Jan", "Feb", "March", "April", "May", "Jun", "July", "Aug~
 ## $ Description &lt;chr&gt; "Urology", NA, NA, NA, NA, NA, "Vascular Surgery", NA, "Ur~
 ```
@@ -316,13 +317,13 @@ We could use the tableR function to scrape the results of the Championship table
 &lt;img src="man/figures/football_gif.gif" alt="drawing" height="350px" width="700px"/&gt;
 
 ---
-## Using the retrieved Xpath from Google
+### Using the retrieved Xpath from Google
 
 The next step would be to copy the xpath and url into a variable, so we can differentiate them later.
 
 
 ```r
-football_xpath &lt;- '//*[@id="u7035812909699189"]/div/div[2]/div/div/div[2]/div/div/table'
+football_xpath &lt;- '//*[@id="u16945876197938725"]/div/div[2]/div/div/div[2]/div/div/table'
 url &lt;- "https://www.bbc.co.uk/sport/football/championship/table"
 ```
 
@@ -341,14 +342,14 @@ head(football_table, 3)
 ## # A tibble: 3 x 14
 ##   V1    V2     Team   P     W     D     L     F     A     GD    Pts   Form      
 ##   &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;  &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;     
-## 1 1     team ~ Bourn~ 14    10    4     0     24    8     16    34    DDrew 0 -~
-## 2 2     team ~ Fulham 14    9     2     3     33    14    19    29    WWon 3 - ~
-## 3 3     team ~ West ~ 14    8     4     2     25    11    14    28    WWon 4 - ~
+## 1 1     team ~ Bourn~ 15    11    4     0     26    8     18    37    WWon 2 - ~
+## 2 2     team ~ Fulham 15    10    2     3     36    14    22    32    LLost 1 -~
+## 3 3     team ~ West ~ 15    8     4     3     25    14    11    28    LLost 0 -~
 ## # ... with 2 more variables: Dict_Type &lt;chr&gt;, DttmExtracted &lt;dttm&gt;
 ```
 
 ---
-## Let's clean the table up
+### Let's clean the table up
 The first stage would be to drop some of the less informative columns:
 
 
@@ -374,7 +375,7 @@ football_table &lt;- cbind(Team=ftball_reduced$Team, minus_team)
 
 
 ---
-## Viewing the data on a scatter chart to explore key metrics
+### Viewing the data on a scatter chart to explore key metrics
 
 ```r
 plot &lt;- ggplot(football_table, 
@@ -384,8 +385,8 @@ plot &lt;- ggplot(football_table,
 ggplotly(plot)
 ```
 
-<div id="htmlwidget-1ab8599e4559c4bd3dd4" style="width:100%;height:55%;" class="plotly html-widget"></div>
-<script type="application/json" data-for="htmlwidget-1ab8599e4559c4bd3dd4">{"x":{"data":[{"x":[1],"y":[8],"text":"W:  1<br />Pts:  8<br />factor(Team): Barnsley","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(248,118,109,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(248,118,109,1)"}},"hoveron":"points","name":"Barnsley","legendgroup":"Barnsley","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[16],"text":"W:  4<br />Pts: 16<br />factor(Team): Birmingham","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(237,129,62,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(237,129,62,1)"}},"hoveron":"points","name":"Birmingham","legendgroup":"Birmingham","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[20],"text":"W:  5<br />Pts: 20<br />factor(Team): Blackburn","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(222,140,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(222,140,0,1)"}},"hoveron":"points","name":"Blackburn","legendgroup":"Blackburn","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[21],"text":"W:  6<br />Pts: 21<br />factor(Team): Blackpool","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(205,150,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(205,150,0,1)"}},"hoveron":"points","name":"Blackpool","legendgroup":"Blackpool","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[10],"y":[34],"text":"W: 10<br />Pts: 34<br />factor(Team): Bournemouth","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(183,159,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(183,159,0,1)"}},"hoveron":"points","name":"Bournemouth","legendgroup":"Bournemouth","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[16],"text":"W:  4<br />Pts: 16<br />factor(Team): Bristol City","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(157,167,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(157,167,0,1)"}},"hoveron":"points","name":"Bristol City","legendgroup":"Bristol City","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3],"y":[11],"text":"W:  3<br />Pts: 11<br />factor(Team): Cardiff","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(124,174,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(124,174,0,1)"}},"hoveron":"points","name":"Cardiff","legendgroup":"Cardiff","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[7],"y":[24],"text":"W:  7<br />Pts: 24<br />factor(Team): Coventry","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(73,181,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(73,181,0,1)"}},"hoveron":"points","name":"Coventry","legendgroup":"Coventry","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3],"y":[5],"text":"W:  3<br />Pts:  5<br />factor(Team): Derby","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,186,56,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,186,56,1)"}},"hoveron":"points","name":"Derby","legendgroup":"Derby","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[9],"y":[29],"text":"W:  9<br />Pts: 29<br />factor(Team): Fulham","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,190,103,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,190,103,1)"}},"hoveron":"points","name":"Fulham","legendgroup":"Fulham","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[21],"text":"W:  6<br />Pts: 21<br />factor(Team): Huddersfield","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,192,139,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,192,139,1)"}},"hoveron":"points","name":"Huddersfield","legendgroup":"Huddersfield","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2],"y":[9],"text":"W:  2<br />Pts:  9<br />factor(Team): Hull","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,193,169,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,193,169,1)"}},"hoveron":"points","name":"Hull","legendgroup":"Hull","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[21],"text":"W:  5<br />Pts: 21<br />factor(Team): Luton","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,191,196,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,191,196,1)"}},"hoveron":"points","name":"Luton","legendgroup":"Luton","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[21],"text":"W:  6<br />Pts: 21<br />factor(Team): Middlesbrough","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,187,220,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,187,220,1)"}},"hoveron":"points","name":"Middlesbrough","legendgroup":"Middlesbrough","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[21],"text":"W:  5<br />Pts: 21<br />factor(Team): Millwall","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,180,240,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,180,240,1)"}},"hoveron":"points","name":"Millwall","legendgroup":"Millwall","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[17],"text":"W:  5<br />Pts: 17<br />factor(Team): Nottm Forest","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,169,255,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,169,255,1)"}},"hoveron":"points","name":"Nottm Forest","legendgroup":"Nottm Forest","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[14],"text":"W:  4<br />Pts: 14<br />factor(Team): Peterborough","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(97,156,255,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(97,156,255,1)"}},"hoveron":"points","name":"Peterborough","legendgroup":"Peterborough","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3],"y":[15],"text":"W:  3<br />Pts: 15<br />factor(Team): Preston","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(159,140,255,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(159,140,255,1)"}},"hoveron":"points","name":"Preston","legendgroup":"Preston","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[21],"text":"W:  6<br />Pts: 21<br />factor(Team): QPR","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(199,124,255,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(199,124,255,1)"}},"hoveron":"points","name":"QPR","legendgroup":"QPR","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[19],"text":"W:  6<br />Pts: 19<br />factor(Team): Reading","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(227,110,246,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(227,110,246,1)"}},"hoveron":"points","name":"Reading","legendgroup":"Reading","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[18],"text":"W:  5<br />Pts: 18<br />factor(Team): Sheff Utd","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(245,100,227,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(245,100,227,1)"}},"hoveron":"points","name":"Sheff Utd","legendgroup":"Sheff Utd","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[21],"text":"W:  6<br />Pts: 21<br />factor(Team): Stoke","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,97,204,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(255,97,204,1)"}},"hoveron":"points","name":"Stoke","legendgroup":"Stoke","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[17],"text":"W:  4<br />Pts: 17<br />factor(Team): Swansea","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,100,176,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(255,100,176,1)"}},"hoveron":"points","name":"Swansea","legendgroup":"Swansea","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[8],"y":[28],"text":"W:  8<br />Pts: 28<br />factor(Team): West Brom","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,108,145,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(255,108,145,1)"}},"hoveron":"points","name":"West Brom","legendgroup":"West Brom","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":23.3059360730594,"r":7.30593607305936,"b":37.2602739726027,"l":37.2602739726027},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.55,10.45],"tickmode":"array","ticktext":["2.5","5.0","7.5","10.0"],"tickvals":[2.5,5,7.5,10],"categoryorder":"array","categoryarray":["2.5","5.0","7.5","10.0"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"W","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[3.55,35.45],"tickmode":"array","ticktext":["10","20","30"],"tickvals":[10,20,30],"categoryorder":"array","categoryarray":["10","20","30"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"Pts","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"title":{"text":"factor(Team)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"2b90341b27b7":{"x":{},"y":{},"colour":{},"type":"scatter"}},"cur_data":"2b90341b27b7","visdat":{"2b90341b27b7":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-ceb31574f017a62ebbbe" style="width:100%;height:55%;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-ceb31574f017a62ebbbe">{"x":{"data":[{"x":[1],"y":[8],"text":"W:  1<br />Pts:  8<br />factor(Team): Barnsley","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(248,118,109,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(248,118,109,1)"}},"hoveron":"points","name":"Barnsley","legendgroup":"Barnsley","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[22],"text":"W:  6<br />Pts: 22<br />factor(Team): Birmingham","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(237,129,62,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(237,129,62,1)"}},"hoveron":"points","name":"Birmingham","legendgroup":"Birmingham","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[23],"text":"W:  6<br />Pts: 23<br />factor(Team): Blackburn","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(222,140,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(222,140,0,1)"}},"hoveron":"points","name":"Blackburn","legendgroup":"Blackburn","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[7],"y":[24],"text":"W:  7<br />Pts: 24<br />factor(Team): Blackpool","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(205,150,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(205,150,0,1)"}},"hoveron":"points","name":"Blackpool","legendgroup":"Blackpool","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[11],"y":[37],"text":"W: 11<br />Pts: 37<br />factor(Team): Bournemouth","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(183,159,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(183,159,0,1)"}},"hoveron":"points","name":"Bournemouth","legendgroup":"Bournemouth","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[19],"text":"W:  5<br />Pts: 19<br />factor(Team): Bristol City","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(157,167,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(157,167,0,1)"}},"hoveron":"points","name":"Bristol City","legendgroup":"Bristol City","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3],"y":[12],"text":"W:  3<br />Pts: 12<br />factor(Team): Cardiff","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(124,174,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(124,174,0,1)"}},"hoveron":"points","name":"Cardiff","legendgroup":"Cardiff","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[8],"y":[27],"text":"W:  8<br />Pts: 27<br />factor(Team): Coventry","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(73,181,0,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(73,181,0,1)"}},"hoveron":"points","name":"Coventry","legendgroup":"Coventry","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3],"y":[5],"text":"W:  3<br />Pts:  5<br />factor(Team): Derby","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,186,56,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,186,56,1)"}},"hoveron":"points","name":"Derby","legendgroup":"Derby","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[10],"y":[32],"text":"W: 10<br />Pts: 32<br />factor(Team): Fulham","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,190,103,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,190,103,1)"}},"hoveron":"points","name":"Fulham","legendgroup":"Fulham","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[7],"y":[25],"text":"W:  7<br />Pts: 25<br />factor(Team): Huddersfield","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,192,139,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,192,139,1)"}},"hoveron":"points","name":"Huddersfield","legendgroup":"Huddersfield","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[2],"y":[9],"text":"W:  2<br />Pts:  9<br />factor(Team): Hull","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,193,169,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,193,169,1)"}},"hoveron":"points","name":"Hull","legendgroup":"Hull","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[24],"text":"W:  6<br />Pts: 24<br />factor(Team): Luton","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,191,196,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,191,196,1)"}},"hoveron":"points","name":"Luton","legendgroup":"Luton","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[21],"text":"W:  6<br />Pts: 21<br />factor(Team): Middlesbrough","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,187,220,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,187,220,1)"}},"hoveron":"points","name":"Middlesbrough","legendgroup":"Middlesbrough","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[24],"text":"W:  6<br />Pts: 24<br />factor(Team): Millwall","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,180,240,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,180,240,1)"}},"hoveron":"points","name":"Millwall","legendgroup":"Millwall","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[19],"text":"W:  5<br />Pts: 19<br />factor(Team): Nottm Forest","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(0,169,255,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(0,169,255,1)"}},"hoveron":"points","name":"Nottm Forest","legendgroup":"Nottm Forest","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[15],"text":"W:  4<br />Pts: 15<br />factor(Team): Peterborough","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(97,156,255,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(97,156,255,1)"}},"hoveron":"points","name":"Peterborough","legendgroup":"Peterborough","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4],"y":[18],"text":"W:  4<br />Pts: 18<br />factor(Team): Preston","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(159,140,255,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(159,140,255,1)"}},"hoveron":"points","name":"Preston","legendgroup":"Preston","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[22],"text":"W:  6<br />Pts: 22<br />factor(Team): QPR","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(199,124,255,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(199,124,255,1)"}},"hoveron":"points","name":"QPR","legendgroup":"QPR","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[19],"text":"W:  6<br />Pts: 19<br />factor(Team): Reading","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(227,110,246,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(227,110,246,1)"}},"hoveron":"points","name":"Reading","legendgroup":"Reading","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[5],"y":[19],"text":"W:  5<br />Pts: 19<br />factor(Team): Sheff Utd","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(245,100,227,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(245,100,227,1)"}},"hoveron":"points","name":"Sheff Utd","legendgroup":"Sheff Utd","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[22],"text":"W:  6<br />Pts: 22<br />factor(Team): Stoke","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,97,204,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(255,97,204,1)"}},"hoveron":"points","name":"Stoke","legendgroup":"Stoke","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[6],"y":[23],"text":"W:  6<br />Pts: 23<br />factor(Team): Swansea","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,100,176,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(255,100,176,1)"}},"hoveron":"points","name":"Swansea","legendgroup":"Swansea","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[8],"y":[28],"text":"W:  8<br />Pts: 28<br />factor(Team): West Brom","type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(255,108,145,1)","opacity":1,"size":5.66929133858268,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(255,108,145,1)"}},"hoveron":"points","name":"West Brom","legendgroup":"West Brom","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":23.3059360730594,"r":7.30593607305936,"b":37.2602739726027,"l":37.2602739726027},"font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.5,11.5],"tickmode":"array","ticktext":["3","6","9"],"tickvals":[3,6,9],"categoryorder":"array","categoryarray":["3","6","9"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"W","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[3.4,38.6],"tickmode":"array","ticktext":["10","20","30"],"tickvals":[10,20,30],"categoryorder":"array","categoryarray":["10","20","30"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(235,235,235,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"Pts","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":null,"bordercolor":null,"borderwidth":0,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"title":{"text":"factor(Team)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"abc35893838":{"x":{},"y":{},"colour":{},"type":"scatter"}},"cur_data":"abc35893838","visdat":{"abc35893838":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 
 ---
 background-image: url(man/figures/practice.jpg)
@@ -423,7 +424,7 @@ str(result_list)
 ##   ..$ node:&lt;externalptr&gt; 
 ##   ..$ doc :&lt;externalptr&gt; 
 ##   ..- attr(*, "class")= chr [1:2] "xml_document" "xml_node"
-##  $ datetime_access : POSIXct[1:1], format: "2021-10-29 15:05:57"
+##  $ datetime_access : POSIXct[1:1], format: "2021-11-03 08:58:47"
 ##  $ person_accessed : chr "GARY.HUTSON - ASCENT"
 ```
 
@@ -459,6 +460,35 @@ NHSDataDictionaRy::left_xl(clean_txt, 20)
 background-image: url(man/figures/practice.jpg)
 # Practice time - 10 minutes
 Have a go at finding a component from the NHS Data Dictionary, or other website, to test out this functionality.
+
+---
+
+# Scraping a list of links from a website
+The NHSDataDictionaRy tool provides functionality for scraping a webpage to extract all the urls from the page. This is how it can be implemented:
+
+
+```r
+url &lt;- "https://datadictionary.nhs.uk/data_sets_overview.html"
+results &lt;- NHSDataDictionaRy::linkScrapeR(url, SSL_needed = FALSE)
+head(results %&gt;% 
+       dplyr::select(url), 10)
+```
+
+```
+## # A tibble: 10 x 1
+##    url                                                                 
+##    &lt;chr&gt;                                                               
+##  1 #wh_topic_body                                                      
+##  2 https://www.nhs.uk                                                  
+##  3 index.html                                                          
+##  4 about/about.html                                                    
+##  5 help/help_and_guidance.html                                         
+##  6 data_sets_overview.html                                             
+##  7 data_elements_overview.html#dataElement_overview                    
+##  8 attributes_overview.html#attribute_overview                         
+##  9 classes_overview.html#class_overview                                
+## 10 nhs_business_definitions_overview.html#business_definitions_overview
+```
 
 ---
 
@@ -537,17 +567,17 @@ print(head(c19_final,5))
 
 ```
 ##         Country     Continent TotalCases TotalRecovered TotalDeaths TotalTests
-## 1 North America North America   56084149       44705308     1144564          0
-## 2          Asia          Asia   79130791       76178281     1167291          0
-## 3 South America South America   38367384       36533717     1169474          0
-## 4        Europe        Europe   64006584       57732315     1296300          0
-## 5        Africa        Africa    8563477        7900435      218366          0
+## 1 North America North America   56441733       45210670     1151451          0
+## 2          Asia          Asia   79591311       76678696     1174438          0
+## 3 South America South America   38442213       36577168     1171024          0
+## 4        Europe        Europe   64958366       58371504     1309941          0
+## 5        Africa        Africa    8581186        7920450      219105          0
 ##   NewCases
-## 1     4712
-## 2    45841
-## 3        0
-## 4   153657
-## 5      884
+## 1     3687
+## 2    24275
+## 3      138
+## 4    37922
+## 5        0
 ```
   
 With this dataset we will create some visuals. We could even store these in a data table with a time stamp over time to get the relevant days COVID-19 results.
@@ -579,7 +609,7 @@ ggplot(highest_cases, aes(TotalDeaths,TotalCases)) +
   labs(x="Total COVID-19 Deaths", y="Total COVID-19 Cases")
 ```
 
-&lt;img src="NHSDataDictionaRyMarkdown_files/figure-html/graph_the_results-1.png" width="30%" /&gt;
+&lt;img src="NHSDataDictionaRyMarkdownFinalVersion_files/figure-html/graph_the_results-1.png" width="30%" /&gt;
 
 ---
 class: inverse, middle, left, hide-logo

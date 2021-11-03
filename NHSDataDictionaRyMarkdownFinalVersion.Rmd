@@ -169,11 +169,11 @@ background-image: url(man/figures/practice.jpg)
 Have a go at extracting elements from the nhs_data_elements() and TableR functions.
 
 ---
-## Introducing a quicker way to retrieve elements
+# Introducing a quicker way to retrieve elements
 
 Until now we have been working long hand and finding with retrieving the list of lookups and then using the TableR function. There is a more simple function in the package to use to do this, but I wanted to get you familiar with using the returned elements such as the URL and XPath, because we will come on to this again later.
 
-### nhs_table_findeR to the rescue
+## nhs_table_findeR to the rescue
 
 ```{r quicker_way_to_ret_elements}
 tfc <- NHSDataDictionaRy::nhs_table_findeR("ACTIVITY TREATMENT FUNCTION CODE",
@@ -190,6 +190,7 @@ This function replaces the convoluted code we used earlier.
 We have this lookup and now we will generate some hospital data to match with our lookups:
 ```{r generated_data}
 
+set.seed(123)
 spec_code <- rep(as.character(c(101,102,103,104,105,106,107, 108)), 12)
 attends <- round(rnorm(length(spec_code), 500, 50))
 breaches <- round(rnorm(length(spec_code), 40, 3))
@@ -254,12 +255,12 @@ We could use the tableR function to scrape the results of the Championship table
 <img src="man/figures/football_gif.gif" alt="drawing" height="350px" width="700px"/>
 
 ---
-## Using the retrieved Xpath from Google
+### Using the retrieved Xpath from Google
 
 The next step would be to copy the xpath and url into a variable, so we can differentiate them later.
 
 ```{r google_xpath_football}
-football_xpath <- '//*[@id="u7035812909699189"]/div/div[2]/div/div/div[2]/div/div/table'
+football_xpath <- '//*[@id="u16945876197938725"]/div/div[2]/div/div/div[2]/div/div/table'
 url <- "https://www.bbc.co.uk/sport/football/championship/table"
 ```
 
@@ -275,7 +276,7 @@ head(football_table, 3)
 ```
 
 ---
-## Let's clean the table up
+### Let's clean the table up
 The first stage would be to drop some of the less informative columns:
 
 ```{r drop_cols_footy}
@@ -301,7 +302,7 @@ football_table <- cbind(Team=ftball_reduced$Team, minus_team)
 
 
 ---
-## Viewing the data on a scatter chart to explore key metrics
+### Viewing the data on a scatter chart to explore key metrics
 ```{r glimpsing_the_table, out.width='100%', out.height='55%'}
 
 plot <- ggplot(football_table, 
@@ -348,7 +349,7 @@ The next stage is to clean the extracted text from the list element **result**:
 
 ```{r cleaning_the_text}
 clean_txt <- trimws(unlist(result_list$result)) %>% 
-  gsub("[\r\n]", "",.) 
+ 
 
 print(clean_txt)
 
@@ -367,6 +368,22 @@ NHSDataDictionaRy::left_xl(clean_txt, 20)
 background-image: url(man/figures/practice.jpg)
 # Practice time - 10 minutes
 Have a go at finding a component from the NHS Data Dictionary, or other website, to test out this functionality.
+
+---
+
+# Scraping a list of links from a website
+The NHSDataDictionaRy tool provides functionality for scraping a webpage to extract all the urls from the page. This is how it can be implemented:
+
+```{r implementing_link_scraper}
+
+
+url <- "https://datadictionary.nhs.uk/data_sets_overview.html"
+results <- NHSDataDictionaRy::linkScrapeR(url, SSL_needed = FALSE)
+head(results %>% 
+       dplyr::select(url), 10)
+
+
+```
 
 ---
 
