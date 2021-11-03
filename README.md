@@ -1,4 +1,5 @@
 # NHS-R Workshop - NHSDataDictionaRy workshop
+<p><a href="https://hutsons-hacks.info/"><img src = "man/figures/ConfusionTableR.png" width = "125px" height = "150px" align="right"></a></p>
 Content for the NHS-R workshop on the use of the NHSDataDictionaRy web scraping tool. 
 
 ## Contents included
