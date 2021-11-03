@@ -1,4 +1,5 @@
 # NHS-R Workshop - NHSDataDictionaRy workshop
+![GitHub Repo stars](https://img.shields.io/github/stars/StatsGary/NHSDataDictionaRy?label=NHSDataDictionaRy%20Stars)
 <p><a href="https://hutsons-hacks.info/"><img src = "man/figures/NHSDataDict.png" width = "125px" height = "150px" align="right"></a></p>
 Content for the NHS-R workshop on the use of the NHSDataDictionaRy web scraping tool. 
 
