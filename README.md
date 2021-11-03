@@ -13,3 +13,12 @@ The contents of the workshop contain:
 - Working with XPath website elements with the NHSDataDictionaRy package
 - How to use the package and retrieve website elements
 - In general, a whistle stop tour of web scraping and how to do this with ease with the package
+
+## Slides from the session
+
+The content is available here:
+
+* [Workshop HTML slides](https://wp.me/aaEpoT-2hY) - covers all the content in the workshop
+* Supporting RMarkdown xaringan workbook for referencing the code examples
+
+
