@@ -18,7 +18,7 @@ The contents of the workshop contain:
 
 The content is available here:
 
-* [Workshop HTML slides](https://wp.me/aaEpoT-2hY) - covers all the content in the workshop
-* Supporting RMarkdown xaringan workbook for referencing the code examples
+* [Workshop HTML slides](https://github.com/StatsGary/NHSDataDictionaRy_workshop/blob/main/NHSDataDictionary_Workshop_Slides.pdf) - covers all the content in the workshop
+* [Supporting RMarkdown xaringan workbook](https://github.com/StatsGary/NHSDataDictionaRy_workshop/blob/main/NHSDataDictionaRyMarkdownFinalVersion.Rmd) for referencing the code examples and recreating the xaringan slides
 
 
